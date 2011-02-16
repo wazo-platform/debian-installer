@@ -1,0 +1,26 @@
+#!/bin/sh
+
+scr_print "XiVO Training installation in progress"
+
+# inetd not needed
+if [ -e /etc/init.d/inetd ]; then
+	invoke-rc.d inetd stop
+	update-rc.d -f inetd remove
+	scr_progress
+fi
+
+# additionnal packages
+pkg_manager -y install gcc libstdc++5 libncurses5-dev linux-headers-${KERN_REL} libnewt-dev libssl-dev libmysqlclient15-dev
+scr_progress
+
+# special user with sudo
+useradd -m -g users -c "XiVO Training" -p '$1$qnHilUkr$pDAafnorfIAGq2vnX23xN0' formation
+echo -e "formation\tALL=(ALL) ALL" >>/etc/sudoers
+scr_progress
+
+# xorg config
+wget -O /etc/X11/xorg.conf ftp://fai.proformatique.com/fai/formation_xivo_enh/xorg.conf
+scr_progress
+
+scr_progress_done
+

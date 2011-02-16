@@ -1,0 +1,60 @@
+#!/bin/sh
+
+# === Bootstrap ===
+
+scr_print "Bootstrapping..."
+
+# looking for the proper XIVO version
+echo "deb http://dak.proformatique.com/debian-private/clients/callbooster etch-xivo-tardis-dev restricted" >/etc/apt/sources.list.d/pf-xivo-callbooster.sources.list
+pkg_manager update
+scr_progress
+
+scr_progress_done
+
+
+# === Preseeding ===
+
+scr_print "Preseeding..."
+
+pkg_manager -y install apg
+scr_progress
+
+SQL_PASSWD=$(apg -m 12 -x 12 -a 1 -M nl -n 1)
+echo "
+mysql-server-5.0	mysql-server/root_password_again	password ${SQL_PASSWD}
+mysql-server-5.0	mysql-server/root_password	password ${SQL_PASSWD}
+" | debconf-set-selections
+scr_progress
+
+scr_progress_done
+
+
+# === Pre-Configuration ===
+
+scr_println "Callbooster-specific pre-configuration in progress..."
+
+mkdir -p /etc/mysql
+touch /etc/mysql/pf-rootpwd.cnf
+chmod 600 /etc/mysql/pf-rootpwd.cnf
+echo -e "[client]\npassword\t= ${SQL_PASSWD}" > /etc/mysql/pf-rootpwd.cnf
+scr_progress
+
+scr_progress_done
+
+
+# === Install ===
+
+scr_print "Callbooster XIVO addons installation in progress..."
+
+# ensure forked packages are up-to-date
+pkg_manager -y dist-upgrade
+scr_progress
+
+pkg_manager -y install pf-xivo-addons-callbooster
+scr_progress
+
+invoke-rc.d mysql restart
+scr_progress
+
+scr_progress_done
+

@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# work around buggy udev rule
+sed -i 's/allow-hotplug/auto/' /target/etc/network/interfaces
+rm -f /target/etc/udev/rules.d/*_persistent-net.rules
+
+# drivers update
+wget -O /target/${KMOD_DIR}/e1000e.ko ftp://fai.proformatique.com/fai/etchnhalf/e1000e.ko
+wget -O /target/${KMOD_DIR}/atl1e.ko ftp://fai.proformatique.com/fai/etchnhalf/atl1e.ko
+
+# use Etch postinst scripts
+preseed_fetch /classes/${CLASS}/etch_postinst_script_launcher /target/${POSTINSTDIR}/postinst_script_launcher
+preseed_fetch /classes/${CLASS}/etch_postinst_script /target/${POSTINSTDIR}/postinst_script
+

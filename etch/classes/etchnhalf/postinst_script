@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# === Install ===
+
+scr_print "Etch and a Half installation in progress"
+
+ETCHNHALF_KVER="2.6.24-etchnhalf.1-${KERN_FLAVOUR}"
+
+pkg_manager -y install linux-image-${ETCHNHALF_KVER}
+scr_progress
+
+if dpkg -l dahdi-linux-modules-${KERN_REL} 2>/dev/null; then
+	pkg_manager -y install dahdi-linux-modules-${ETCHNHALF_KVER}
+fi
+scr_progress
+
+ask_for_extra_reboot
+scr_progress
+
+scr_progress_done
+

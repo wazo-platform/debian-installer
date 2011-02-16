@@ -1,0 +1,258 @@
+#!/bin/sh
+
+set -x
+
+DEBIAN_FRONTEND=noninteractive
+DEBIAN_PRIORITY=critical
+DEBCONF_NOWARNINGS=yes
+export DEBIAN_FRONTEND DEBCONF_PRIORITY DEBCONF_NOWARNINGS
+
+
+scr_clear()
+{
+	clear >/dev/tty1
+}
+
+scr_print()
+{
+	echo -en "$1" >/dev/tty1
+}
+
+scr_println()
+{
+	scr_print "$1\n\r"
+}
+
+scr_println_ok()
+{
+	scr_println "\033[0;32;40m$1\033[0;38;40m"
+}
+
+scr_println_error()
+{
+	scr_println "\033[0;31;40m$1\033[0;38;40m"
+}
+
+scr_progress()
+{
+	scr_print "."
+}
+
+scr_progress_done()
+{
+	scr_println_ok "DONE"
+}
+
+scr_begin()
+{
+	scr_print "\033[0;38;40m"
+}
+
+scr_end()
+{
+	scr_print "\033[0;37;40m"
+}
+
+exit_error()
+{
+	scr_println
+	scr_println
+	scr_println_error "Installation Failed !!!"
+	scr_println
+	scr_println "Press Enter to login and analyse the installation log (${POSTINST_LOG})."
+	scr_println
+	read z
+
+	scr_end
+	exit 1
+}
+
+export EXTRA_REBOOT_FILE="${POSTINSTDIR}/extra_reboot"
+
+ask_for_extra_reboot()
+{
+	touch ${EXTRA_REBOOT_FILE}
+}
+
+clear_extra_reboot()
+{
+	rm -f ${EXTRA_REBOOT_FILE}
+}
+
+test_extra_reboot()
+{
+	if [ -e ${EXTRA_REBOOT_FILE} ]; then
+		return 0
+	else
+		return 1
+	fi
+}
+
+display_final_info()
+{
+	scr_println
+	scr_println_ok "Installation successful !!!"
+
+	MSG=$(ip addr show | grep "inet .* scope global")
+	scr_println
+	scr_println "Network information:"
+	scr_println "${MSG}"
+
+	scr_println
+	scr_println "Press Enter to login and configure."
+	scr_println
+	read z
+}
+
+finish_fai()
+{
+	clear_extra_reboot
+
+	# remove proxy used for accelerating installation in HQ
+	if [ -e /etc/apt/apt.conf ]; then
+		sed -r -i '/^Acquire::http::Proxy .*$/ D' /etc/apt/apt.conf
+	fi
+
+	# packages cleanup
+	pkg_manager clean
+
+	# remove FAI hook
+	rm -f /etc/rc2.d/S*pf-postinst
+}
+
+export PKG_MANAGER_TRIES=3
+export APTITUDE="aptitude"
+
+pkg_manager()
+{
+	export PARAMS=$*
+
+	# TODO: should detect suite to use apt-get or aptitude
+
+	# in this subshell, the trap on ERR is _not_ inherited
+	(
+		for I in $(seq 1 ${PKG_MANAGER_TRIES}); do
+			# use 'yes' command to push safe replies
+			yes n | ${APTITUDE} ${PARAMS}
+			if [ $? = 0 ]; then
+				exit 0
+			fi
+		done
+		exit 1
+	)
+	if [ $? != 0 ]; then
+		exit_error
+	fi
+}
+
+
+# catch errors
+trap exit_error ERR
+
+scr_begin
+scr_clear
+scr_println
+scr_println "=*=  Proformatique Fully Automatic Installation =*="
+scr_println
+
+if test_extra_reboot; then
+	finish_fai
+	display_final_info
+else
+	# discovery
+	KERN_REL=$(uname -r)
+	KERN_FLAVOUR=$(echo ${KERN_REL} | cut -d\- -f3)
+
+	scr_print "Base installation in progress"
+
+	# configure syslog
+	echo "*.* /dev/tty12" >>/etc/syslog.conf
+	invoke-rc.d sysklogd restart
+	scr_progress
+
+	# Update time, because apt-key-complains when adding a key made in the future
+	ntpdate-debian || true
+	scr_progress
+
+	# avoid extraneous checkfs
+	# (fetch partition list for all hd<x> and sd<x> devices, keep Linux type only)
+	FS_LIST=$(sfdisk -l -q /dev/[hs]d[a-z] 2>/dev/null | grep "^/dev.* Linux$" | cut -d\  -f1)
+	echo "FAI-DEBUG:TUNE2FS:FS_LIST> ${FS_LIST}"
+	for FS in ${FS_LIST}; do
+		tune2fs -T now ${FS};
+	done
+
+	# allow late preseeding via packaging
+	sed -i -r 's/^DPkg::Pre-Install-Pkgs/\/\/DPkg::Pre-Install-Pkgs/' /etc/apt/apt.conf.d/70debconf
+
+	# configure apt
+	SUITE=$(cat ${POSTINSTDIR}/suite)
+	CLASSES=$(cat ${POSTINSTDIR}/classes)
+	if [ -x /usr/bin/apt-key ]; then
+		pkg_manager -y install gnupg
+		wget -O /tmp/apt.key http://dak.proformatique.com/ziyi_proformatique_current.asc
+		apt-key add /tmp/apt.key
+	fi
+        FAI_DATA_PATH=fai.proformatique.com/fai/base/${SUITE}
+	wget -r -P /tmp/zzz ftp://${FAI_DATA_PATH}
+	cp -r /tmp/zzz/${FAI_DATA_PATH}/* /etc/apt/
+	for FILE in $(find /etc/apt -type f); do
+		sed -i "s/#SUITE#/${SUITE}/g" ${FILE}
+	done
+	pkg_manager update
+	scr_progress
+
+	# fetch security and other updates
+	pkg_manager -y dist-upgrade
+	scr_progress
+
+	# install extra packages
+	# (dhcp-client has to be purged _before_ dhcp3-client installation
+	#  to avoid debconf user request for this critical event)
+	pkg_manager -y purge dhcp-client
+	pkg_manager -y install ssh dhcp3-client iproute postfix exim4-base_ exim4-config_ \
+		sudo vim bzip2 less iputils-ping host traceroute popularity-contest \
+		linuxlogo tasksel_ nvi_ vim-tiny_ pf-fai pf-sys-ssh
+	update-alternatives --set editor $(which vim.basic)
+	scr_progress
+
+	# miscellaneous configuration
+	chmod 700 /root
+	## no disclosure when logouting
+	echo "clear" >/root/.bash_logout
+	## nice console login prompt
+	sed -i 's/getty 38400 tty/getty -f \/etc\/issue.linuxlogo 38400 tty/' /etc/inittab
+	sed -i 's/-L [0-9]/-L 3/' /etc/linux_logo.conf
+	invoke-rc.d linuxlogo restart
+	telinit q
+	scr_progress
+
+	scr_progress_done
+
+	# run custom postinst commands if needed
+	for SCRIPT in $(find ${POSTINSTDIR}/postinst.d -mindepth 1 -maxdepth 1 | sort); do
+		. ${SCRIPT}
+	done
+
+	# replace local mirror config if needed
+	sed -i -r 's#http://mirror(\.[a-z-]+)*.(proformatique|avencall).com/debian-security/#http://security.debian.org/#' /etc/apt/sources.list
+	sed -i -r 's#http://mirror(\.[a-z-]+)*.(proformatique|avencall).com/debian#http://archive.debian.org/debian/#' /etc/apt/sources.list
+	sed -i '/Line commented out by installer because it failed to verify/ d' /etc/apt/sources.list
+
+	if test_extra_reboot; then
+		REBOOT_DELAY=7
+
+		scr_println
+		scr_println "A reboot is needed to finish the installation. This will be done in ${REBOOT_DELAY} seconds..."
+		scr_end
+
+		sleep ${REBOOT_DELAY}
+		reboot
+	else
+		finish_fai
+		display_final_info
+	fi
+fi
+
+scr_end
+
