@@ -1,0 +1,4 @@
+
+# HP SAS driver is present and working, but not registered properly in the udev common disk path
+d-i	preseed/include_command string if [ ! -e /dev/discs/disc0/disc -a -d /dev/cciss ]; then echo "/workarounds/hp_sas.cfg"; fi
+
