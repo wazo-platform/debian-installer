@@ -10,9 +10,6 @@
 # Description:      Proformatique xivo postins fai scripts
 ### END INIT INFO
 
-#
-# Author: Nicolas HICHER (atarakt) <nhicher@proformatique.com>
-#
 
 # Parameters
 export POSTINSTDIR=/var/lib/pf-fai
