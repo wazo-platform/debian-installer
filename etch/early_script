@@ -18,15 +18,7 @@ else
 	DNSDOMAIN=$(debconf-get netcfg/get_domain)
 	echo "DNS Domain: ${DNSDOMAIN}" >>/tmp/location_config.log
 
-	MIRROR=
-	if [ "${DNSDOMAIN}" = "lan-puteaux.avencall.com" ]; then
-		MIRROR="mirror.lan-puteaux.avencall.com"
-	fi
-	if [ "${DNSDOMAIN}" = "lan-limonest.avencall.com" ]; then
-		MIRROR="mirror.lan-limonest.avencall.com"
-	fi
-
-
+	MIRROR="archive.debian.org"
 	if [ -n "${MIRROR}" ]; then
 		echo "Local config selected, using mirror: ${MIRROR}" >>/tmp/location_config.log
 
@@ -39,9 +31,6 @@ else
 		db_set mirror/http/hostname "${MIRROR}"
 		db_set mirror/http/mirror "${MIRROR}"
 		db_set apt-setup/hostname "${MIRROR}"
-		# dirty hack because 'apt-setup/security_path' key is not available (at least on Etch)
-		db_set apt-setup/security_host "${MIRROR}/debian-security"
-		#db_set apt-setup/security_path "/debian-security"
 	fi
 fi
 

@@ -122,18 +122,16 @@ finish_fai()
 
 export PKG_MANAGER_TRIES=3
 export APTITUDE="aptitude"
+export APTGET="apt-get"
 
 pkg_manager()
 {
-	export PARAMS=$*
-
-	# TODO: should detect suite to use apt-get or aptitude
+	export PARAMS="$*"
 
 	# in this subshell, the trap on ERR is _not_ inherited
 	(
 		for I in $(seq 1 ${PKG_MANAGER_TRIES}); do
-			# use 'yes' command to push safe replies
-			yes n | ${APTITUDE} ${PARAMS}
+			${APTGET} -o Dpkg::Options::="--force-confold" ${PARAMS}
 			if [ $? = 0 ]; then
 				exit 0
 			fi
@@ -144,6 +142,29 @@ pkg_manager()
 		exit_error
 	fi
 }
+
+# OLDER pkg_manager
+#pkg_manager()
+#{
+#	export PARAMS="$*"
+#
+#	# TODO: should detect suite to use apt-get or aptitude
+#
+#	# in this subshell, the trap on ERR is _not_ inherited
+#	(
+#		for I in $(seq 1 ${PKG_MANAGER_TRIES}); do
+#			# use 'yes' command to push safe replies
+#			yes n | ${APTITUDE} ${PARAMS}
+#			if [ $? = 0 ]; then
+#				exit 0
+#			fi
+#		done
+#		exit 1
+#	)
+#	if [ $? != 0 ]; then
+#		exit_error
+#	fi
+#}
 
 
 # catch errors
@@ -209,10 +230,10 @@ else
 	# install extra packages
 	# (dhcp-client has to be purged _before_ dhcp3-client installation
 	#  to avoid debconf user request for this critical event)
-	pkg_manager -y purge dhcp-client
-	pkg_manager -y install ssh dhcp3-client iproute postfix exim4-base_ exim4-config_ \
+	pkg_manager -y remove --purge dhcp-client
+	pkg_manager -y install ssh dhcp3-client iproute postfix \
 		sudo vim bzip2 less iputils-ping host traceroute popularity-contest \
-		linuxlogo tasksel_ nvi_ vim-tiny_ pf-fai pf-sys-ssh
+		linuxlogo tasksel nvi vim-tiny pf-fai pf-sys-ssh
 	update-alternatives --set editor $(which vim.basic)
 	scr_progress
 
@@ -235,7 +256,6 @@ else
 	done
 
 	# replace local mirror config if needed
-	sed -i -r 's#http://mirror(\.[a-z-]+)*.(proformatique|avencall).com/debian-security/#http://security.debian.org/#' /etc/apt/sources.list
 	sed -i -r 's#http://mirror(\.[a-z-]+)*.(proformatique|avencall).com/debian#http://archive.debian.org/debian/#' /etc/apt/sources.list
 	sed -i '/Line commented out by installer because it failed to verify/ d' /etc/apt/sources.list
 

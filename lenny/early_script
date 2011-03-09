@@ -20,12 +20,13 @@ else
 	echo "DNS Domain: ${DNSDOMAIN}" >>/tmp/location_config.log
 
 	MIRROR=
-	if [ "${DNSDOMAIN}" = "lan-puteaux.avencall.com" ]; then
-		MIRROR="mirror.lan-puteaux.avencall.com"
-	fi
-	if [ "${DNSDOMAIN}" = "lan-limonest.avencall.com" ]; then
-		MIRROR="mirror.lan-limonest.avencall.com"
-	fi
+    # TODO add real squeeze mirror
+	#if [ "${DNSDOMAIN}" = "lan-puteaux.avencall.com" ]; then
+	#	MIRROR="mirror.lan-puteaux.avencall.com:3142"
+	#fi
+	#if [ "${DNSDOMAIN}" = "lan-limonest.avencall.com" ]; then
+	#	MIRROR="mirror.lan-limonest.avencall.com:3142"
+	#fi
 	if [ "${DNSDOMAIN}" = "atarakt.com" ]; then
 		MIRROR="mirror.atarakt.com:3142"
 	fi
