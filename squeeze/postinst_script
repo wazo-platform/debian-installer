@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 
-#set -x
+set +x
 
 DEBIAN_FRONTEND=noninteractive
 DEBIAN_PRIORITY=critical
@@ -15,7 +15,8 @@ scr_clear()
 
 scr_print()
 {
-	echo -en "$1" >/dev/tty1
+	echo -en $1 >/dev/tty1
+	#echo "$1" >/dev/tty1
 }
 
 scr_println()
