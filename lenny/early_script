@@ -44,8 +44,9 @@ else
 		db_set mirror/http/hostname "${MIRROR}"
 		db_set mirror/http/mirror "${MIRROR}"
 		db_set apt-setup/hostname "${MIRROR}"
+        # TODO find a clean way to do this
 		# dirty hack because 'apt-setup/security_path' key is not available (at least on Etch)
-		db_set apt-setup/security_host "${MIRROR}/debian-security"
+		# db_set apt-setup/security_host "${MIRROR}/debian-security"
 		#db_set apt-setup/security_path "/debian-security"
 	fi
 fi

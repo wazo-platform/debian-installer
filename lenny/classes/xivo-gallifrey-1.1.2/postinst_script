@@ -35,6 +35,7 @@ fi
 
 # XIVO install
 # install kmods before using it, to ensure init scripts won't fail miserably
+echo "APT::Get::AllowUnauthenticated 1;" > /etc/apt/apt.conf
 pkg_manager -y install dahdi-linux-modules-${KERN_REL}
 scr_progress
 pkg_manager -y install pf-xivo
@@ -42,7 +43,7 @@ scr_progress
 
 scr_progress_done
 
-
+rm -rf /etc/apt/apt.conf
 # === Configuration ===
 
 scr_println "XIVO configuration in progress..."
