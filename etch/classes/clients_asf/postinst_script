@@ -5,7 +5,7 @@
 scr_print "Bootstrapping..."
 
 # looking for the proper XIVO version
-pkg_manager -y install pf-fai-xivo-1.0-dalek-1.0.14
+pkg_manager -y --force-yes install pf-fai-xivo-1.0-dalek-1.0.14
 pkg_manager update
 
 VERSION=$(apt-cache show --no-all-versions pf-xivo | grep Version | cut -d\  -f2)
@@ -31,9 +31,9 @@ fi
 
 # XIVO install
 # install kmods before using it, to ensure init scripts won't fail miserably
-pkg_manager -y install dahdi-linux-modules-${KERN_REL}
+pkg_manager -y --force-yes install dahdi-linux-modules-${KERN_REL}
 scr_progress
-pkg_manager -y install pf-xivo
+pkg_manager -y --force-yes install pf-xivo
 scr_progress
 
 scr_progress_done

@@ -21,10 +21,10 @@ else
 
 	MIRROR=
 	if [ "${DNSDOMAIN}" = "lan-puteaux.avencall.com" ]; then
-		MIRROR="mirror.lan-puteaux.avencall.com"
+		MIRROR="mirror.lan-puteaux.avencall.com:3142"
 	fi
 	if [ "${DNSDOMAIN}" = "lan-limonest.avencall.com" ]; then
-		MIRROR="mirror.lan-limonest.avencall.com"
+		MIRROR="mirror.lan-limonest.avencall.com:3142"
 	fi
 	if [ "${DNSDOMAIN}" = "atarakt.com" ]; then
 		MIRROR="mirror.atarakt.com:3142"
@@ -43,9 +43,6 @@ else
 		db_set mirror/http/hostname "${MIRROR}"
 		db_set mirror/http/mirror "${MIRROR}"
 		db_set apt-setup/hostname "${MIRROR}"
-		# dirty hack because 'apt-setup/security_path' key is not available (at least on Etch)
-		db_set apt-setup/security_host "${MIRROR}/debian-security"
-		#db_set apt-setup/security_path "/debian-security"
 	fi
 fi
 
