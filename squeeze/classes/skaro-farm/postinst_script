@@ -70,7 +70,7 @@ invoke-rc.d asterisk restart
 scr_progress
 
 # clean rc.local
-sed -i "s:sh -x /var/lib/pf-fai/postinst_script_launcher.*::" /etc/rc.local
+sed -i "s:sh /var/lib/pf-fai/postinst_script_launcher.*::" /etc/rc.local
 
 scr_progress_done
 

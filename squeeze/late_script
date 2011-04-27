@@ -67,7 +67,7 @@ fi
 chmod a+x /target/${POSTINSTDIR}/*script*
 # TODO : not possible on squeeze, at the moment executed with rc.local, perhaps
 # another solution is usable ?
-sed -i "s:^\(exit 0\):sh -x ${POSTINSTDIR}/postinst_script_launcher\n\1:" /target/etc/rc.local
+sed -i "s:^\(exit 0\):sh ${POSTINSTDIR}/postinst_script_launcher\n\1:" /target/etc/rc.local
 
 
 # Late work
