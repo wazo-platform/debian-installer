@@ -5,7 +5,7 @@
 scr_print "Bootstrapping..."
 
 # looking for the proper XIVO version
-echo "deb http://dak.proformatique.com/debian-private/clients/callbooster etch-xivo-tardis-dev restricted" >/etc/apt/sources.list.d/pf-xivo-callbooster.sources.list
+#echo "deb http://dak.proformatique.com/debian-private/clients/callbooster etch-xivo-tardis-dev restricted" >/etc/apt/sources.list.d/pf-xivo-callbooster.sources.list
 pkg_manager update
 scr_progress
 

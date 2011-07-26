@@ -6,11 +6,23 @@ sed -i -r 's/^DPkg::Pre-Install-Pkgs/\/\/DPkg::Pre-Install-Pkgs/' /etc/apt/apt.c
 # configure apt
 if [ -x /usr/bin/apt-key ]; then
 	apt-get -y install gnupg
-	wget http://dak.proformatique.com/ziyi_proformatique_current.asc -O - | apt-key add -
+	wget http://mirror.xivo.fr/ziyi_proformatique_current.asc -O - | apt-key add -
 fi
-FAI_DATA_PATH=fai.proformatique.com/fai/base/${SUITE}
-wget -r -P /tmp/zzz ftp://${FAI_DATA_PATH}
-cp -r /tmp/zzz/${FAI_DATA_PATH}/* /etc/apt/
+
+cat << EOF >> /etc/apt/apt.conf.d/90pf
+Aptitude::Recommends-Important "false";
+Aptitude::Purge-Unused "true";
+APT::Install-Recommends "false";
+APT::Install-Suggests "false";
+APT::Get::AutomaticRemove "true";
+EOF
+
+cat << EOF >> /etc/apt/sources.list.d/pf.sources.list
+# Proformatique Debian Repository
+deb http://mirror.xivo.fr/debian #SUITE# main non-free
+#deb-src http://mirror.xivo.fr/debian #SUITE# main non-free
+EOF
+
 for FILE in $(find /etc/apt -type f); do
 	sed -i "s/#SUITE#/${SUITE}/g" ${FILE}
 done
