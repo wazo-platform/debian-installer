@@ -1,0 +1,75 @@
+#!/bin/sh
+
+# === Bootstrap ===
+
+scr_print "Bootstrapping..."
+
+# looking for the proper XIVO version
+echo deb http://mirror.xivo.fr/debian lenny-xivo-gallifrey-rc main contrib non-free > /etc/apt/sources.list.d/xivo-rc.sources.list
+pkg_manager update
+pkg_manager -y install pf-fai pf-fai-xivo-1.1-gallifrey-rc
+pkg_manager update
+
+# packages containing source lists could be upgradable
+pkg_manager -y dist-upgrade
+pkg_manager update
+
+VERSION=$(apt-cache show --no-all-versions pf-xivo | grep Version | cut -d\  -f2)
+if [ -z "${VERSION}" ]; then
+	scr_println "XIVO not found"
+	exit_error
+fi
+
+echo ${VERSION} >$POSTINSTDIR/xivo_initial_version
+
+scr_progress_done
+
+
+# === Install ===
+
+scr_print "XIVO ${VERSION} installation in progress"
+
+# inetd not needed
+if [ -e /etc/init.d/inetd ]; then
+	invoke-rc.d inetd stop
+	update-rc.d -f inetd remove
+fi
+
+# XIVO install
+# install kmods before using it, to ensure init scripts won't fail miserably
+pkg_manager -y install dahdi-linux-modules-${KERN_REL}
+scr_progress
+pkg_manager -y install pf-xivo
+scr_progress
+
+scr_progress_done
+
+
+# === Configuration ===
+
+scr_println "XIVO configuration in progress..."
+
+# Zaptel config
+# (ignore errors caused by detection and config generation)
+# (btw, the machine may not have any DAHDI interface)
+(
+	# (restart to autoload modules)
+	invoke-rc.d dahdi restart
+	dahdi_genconf
+	# fix rights
+	CONFIG="/etc/asterisk/dahdi-channels.conf"
+	if [ -e "${CONFIG}" ]; then
+		chown asterisk:www-data ${CONFIG}
+		chmod 660 ${CONFIG}
+	fi
+	# (restart with new config)
+	invoke-rc.d dahdi restart
+) >/dev/null 2>/dev/null || true
+scr_progress
+
+# Asterisk proper start
+invoke-rc.d asterisk restart
+scr_progress
+
+scr_progress_done
+
