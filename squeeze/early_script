@@ -27,7 +27,8 @@ else
 		MIRROR="mirror.lan-limonest.avencall.com:3142"
 	fi
 	if [ "${DNSDOMAIN}" = "lan-quebec.avencall.com" ]; then
-		MIRROR="mirror.lan-quebec.avencall.com:3142"
+		MIRROR="192.168.32.250:3142"
+		#MIRROR="mirror.lan-quebec.avencall.com:3142"
 	fi
 
 

@@ -5,7 +5,7 @@
 scr_print "Bootstrapping..."
 
 # looking for the proper XIVO version
-pkg_manager -y install pf-fai-dev pf-fai-xivo-1.2-skaro-farm
+pkg_manager -y install pf-fai-dev pf-fai-xivo-1.2-skaro
 pkg_manager update
 
 # packages containing source lists could be upgradable
@@ -35,9 +35,9 @@ fi
 
 # XIVO install
 # install kmods before using it, to ensure init scripts won't fail miserably
-pkg_manager -y --force-yes install dahdi-linux-modules-${KERN_REL}
+pkg_manager -y install dahdi-linux-modules-${KERN_REL}
 scr_progress
-pkg_manager -y --force-yes install pf-xivo
+pkg_manager -y install pf-xivo
 scr_progress
 
 scr_progress_done
