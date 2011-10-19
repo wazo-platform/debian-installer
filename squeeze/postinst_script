@@ -213,6 +213,7 @@ else
 	done
 
 	# replace local mirror config if needed
+    # TODO cleanup this part
 	sed -i -r 's#http://mirror(\.[a-z-]+)*.(proformatique|avencall).com/debian-security/#http://security.debian.org/#' /etc/apt/sources.list
 	sed -i -r 's#http://mirror(\.[a-z-]+)*.(proformatique|avencall).com/debian#http://ftp.fr.debian.org/debian/#' /etc/apt/sources.list
 	sed -i '/Line commented out by installer because it failed to verify/ d' /etc/apt/sources.list
