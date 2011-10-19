@@ -72,6 +72,16 @@ if ! grep -q "base-installer/kernel/image" ${CUST_PRESEED}; then
 	echo "d-i base-installer/kernel/image select linux-image-2.6-${KERN_FLAVOUR}" >>${CUST_PRESEED}
 fi
 
+# use 
+if [ "${DNSDOMAIN}" = "lan-quebec.avencall.com" ]; then
+    echo "d-i console-keymaps-at/keymap select us" >>${CUST_PRESEED}
+    echo "d-i	time/zone string US/Eastern" >>${CUST_PRESEED}
+else
+    echo "d-i console-keymaps-at/keymap select fr-latin9" >>${CUST_PRESEED}
+    echo "d-i	time/zone string Europe/Paris" >>${CUST_PRESEED}
+fi
+
+
 debconf-set-selections ${CUST_PRESEED}
 
 #exit 0
