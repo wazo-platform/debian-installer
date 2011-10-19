@@ -90,7 +90,6 @@ if [ -n "${CLASSES}" ]; then
 	done
 fi
 
-# test test test
 # ensure added drivers are taken into account before reboot
 chroot /target depmod -a ${KERN_REL}
 
