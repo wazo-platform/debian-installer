@@ -191,8 +191,7 @@ else
 	pkg_manager -y install ssh dhcp3-client postfix sudo vim-nox bzip2 \
 		less iputils-ping host traceroute popularity-contest linuxlogo \
 		pf-fai pf-sys-ssh
-	pkg_manager -y purge exim4-base exim4-config tasksel tasksel-data nvi vim-tiny
-	update-alternatives --set editor $(which vim)
+	pkg_manager -y purge exim4-base exim4-config tasksel tasksel-data nvi
 	scr_progress
 
 	# miscellaneous configuration
