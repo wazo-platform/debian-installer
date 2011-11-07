@@ -37,6 +37,7 @@ fi
 # install kmods before using it, to ensure init scripts won't fail miserably
 pkg_manager -y install dahdi-linux-modules-${KERN_REL}
 scr_progress
+export LANG=en_US.UTF-8
 pkg_manager -y install pf-xivo
 scr_progress
 
