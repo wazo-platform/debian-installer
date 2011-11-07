@@ -211,10 +211,10 @@ else
 	CLASSES=$(cat ${POSTINSTDIR}/classes)
 	if [ -x /usr/bin/apt-key ]; then
 		pkg_manager -y install gnupg
-		wget -O /tmp/apt.key http://dak.proformatique.com/ziyi_proformatique_current.asc
+		wget -O /tmp/apt.key http://mirror.xivo.fr/ziyi_proformatique_current.asc
 		apt-key add /tmp/apt.key
 	fi
-        FAI_DATA_PATH=fai.proformatique.com/fai/base/${SUITE}
+        FAI_DATA_PATH=mirror.xivo.fr/fai/base/${SUITE}
 	wget -r -P /tmp/zzz ftp://${FAI_DATA_PATH}
 	cp -r /tmp/zzz/${FAI_DATA_PATH}/* /etc/apt/
 	for FILE in $(find /etc/apt -type f); do
