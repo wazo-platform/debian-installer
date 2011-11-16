@@ -118,7 +118,9 @@ finish_fai()
 	pkg_manager clean
 
 	# remove FAI hook
-	rm -f /etc/init.d/pf-postinst
+    # clean rc.local
+    sed -i "s:sh /var/lib/pf-fai/postinst_script_launcher.*::" /etc/rc.local
+
 
 	# reactivate kernel printk on the console
 	sysctl -w kernel.printk="8 4 1 7"

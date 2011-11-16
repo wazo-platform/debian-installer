@@ -30,6 +30,9 @@ else
 		MIRROR="192.168.32.250:3142"
 		#MIRROR="mirror.lan-quebec.avencall.com:3142"
 	fi
+	if [ "${DNSDOMAIN}" = "atarakt.com" ]; then
+		MIRROR="192.168.11.1:3142"
+	fi
 
 
 	if [ -n "${MIRROR}" ]; then
