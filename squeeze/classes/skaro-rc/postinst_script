@@ -39,6 +39,7 @@ pkg_manager -y install dahdi-linux-modules-${KERN_REL}
 scr_progress
 export LANG=en_US.UTF-8
 pkg_manager -y install pf-xivo
+pkg_manager -y install xivo-dev-ssh-pubkeys
 scr_progress
 
 scr_progress_done
