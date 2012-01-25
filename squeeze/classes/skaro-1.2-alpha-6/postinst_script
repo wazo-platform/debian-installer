@@ -5,7 +5,7 @@
 scr_print "Bootstrapping..."
 
 # looking for the proper XIVO version
-pkg_manager -y install pf-fai pf-fai-xivo-1.2-skaro-1.2-alpha-6
+pkg_manager -y install pf-fai pf-fai-xivo-1.2-skaro-alpha-6
 pkg_manager update
 
 # packages containing source lists could be upgradable
