@@ -5,7 +5,7 @@
 scr_print "Bootstrapping..."
 
 # looking for the proper XIVO version
-pkg_manager -y install pf-fai pf-fai-archive
+pkg_manager -y install pf-fai pf-fai-template
 pkg_manager update
 
 # packages containing source lists could be upgradable
