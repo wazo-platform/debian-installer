@@ -5,7 +5,7 @@
 scr_print "Bootstrapping..."
 
 # looking for the proper XIVO version
-echo deb http://mirror.xivo.fr/debian lenny main contrib non-free > /etc/apt/sources.list.d/pf.sources.list
+echo deb http://mirror.xivo.fr/debian lenny main non-free > /etc/apt/sources.list.d/pf.sources.list
 pkg_manager update
 pkg_manager -y install pf-fai pf-fai-xivo-1.1-gallifrey-rc
 pkg_manager update
