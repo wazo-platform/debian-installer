@@ -77,10 +77,10 @@ fi
 
 if [ "${DNSDOMAIN}" = "lan-quebec.avencall.com" ]; then
     echo "d-i console-keymaps-at/keymap select us" >>${CUST_PRESEED}
-    echo "d-i	time/zone string US/Eastern" >>${CUST_PRESEED}
+    echo "d-i time/zone string US/Eastern" >>${CUST_PRESEED}
 else
     echo "d-i console-keymaps-at/keymap select fr-latin9" >>${CUST_PRESEED}
-    echo "d-i	time/zone string Europe/Paris" >>${CUST_PRESEED}
+    echo "d-i ime/zone string Europe/Paris" >>${CUST_PRESEED}
 fi
 
 

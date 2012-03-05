@@ -19,8 +19,8 @@ EOF
 
 cat << EOF >> /etc/apt/sources.list.d/pf.sources.list
 # Proformatique Debian Repository
-deb http://mirror.xivo.fr/debian #SUITE# main contrib non-free
-#deb-src http://mirror.xivo.fr/debian #SUITE# main contrib non-free
+deb http://mirror.xivo.fr/debian #SUITE# main non-free
+#deb-src http://mirror.xivo.fr/debian #SUITE# main non-free
 EOF
 
 for FILE in $(find /etc/apt -type f); do
