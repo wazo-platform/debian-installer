@@ -6,7 +6,6 @@ sed -i -r 's/^DPkg::Pre-Install-Pkgs/\/\/DPkg::Pre-Install-Pkgs/' /etc/apt/apt.c
 # configure apt
 if [ -x /usr/bin/apt-key ]; then
 	apt-get -y install gnupg
-	wget http://mirror.xivo.fr/ziyi_proformatique_current.asc -O - | apt-key add -
 	wget http://mirror.xivo.fr/xivo_current.key -O - | apt-key add -
 fi
 
