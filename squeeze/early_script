@@ -6,48 +6,43 @@ CLASSES=$(debconf-get auto-install/classes | sed 's/,/ /g')
 
 PROXY=$(debconf-get local/proxy)
 if [ -n "${PROXY}" ]; then
-	echo "Proxy config override: ${PROXY}" >>/tmp/location_config.log
-	db_fset mirror/http/proxy seen false
+    echo "Proxy config override: ${PROXY}" >>/tmp/location_config.log
+    db_fset mirror/http/proxy seen false
 else
-	echo "Detecting location..." >>/tmp/location_config.log
-	IFACE=$(ip link show | grep "UP" | grep "eth[0-9]" | cut -d: -f2 | sed 's/ //g')
-	echo "Interface: ${IFACE}" >>/tmp/location_config.log
-	IP=$(ip addr show ${IFACE} | grep -E "\binet\b .* scope global ${IFACE}\$" | sed -r 's/^ +//' | cut -d\  -f2)
-	echo "IP: ${IP}" >>/tmp/location_config.log
-	SUBNET=$(echo ${IP} | cut -d. -f 1-2)
-	echo "Subnet: ${SUBNET}" >>/tmp/location_config.log
-	DNSDOMAIN=$(debconf-get netcfg/get_domain)
-	echo "DNS Domain: ${DNSDOMAIN}" >>/tmp/location_config.log
+    echo "Detecting location..." >>/tmp/location_config.log
+    IFACE=$(ip link show | grep "UP" | grep "eth[0-9]" | cut -d: -f2 | sed 's/ //g')
+    echo "Interface: ${IFACE}" >>/tmp/location_config.log
+    IP=$(ip addr show ${IFACE} | grep -E "\binet\b .* scope global ${IFACE}\$" | sed -r 's/^ +//' | cut -d\  -f2)
+    echo "IP: ${IP}" >>/tmp/location_config.log
+    SUBNET=$(echo ${IP} | cut -d. -f 1-2)
+    echo "Subnet: ${SUBNET}" >>/tmp/location_config.log
+    DNSDOMAIN=$(debconf-get netcfg/get_domain)
+    echo "DNS Domain: ${DNSDOMAIN}" >>/tmp/location_config.log
 
-	MIRROR=
-	if [ "${DNSDOMAIN}" = "lan-puteaux.avencall.com" ]; then
-		MIRROR="mirror.lan-puteaux.avencall.com:3142"
-	fi
-	if [ "${DNSDOMAIN}" = "lan-limonest.avencall.com" ]; then
-		MIRROR="mirror.lan-limonest.avencall.com:3142"
-	fi
-	if [ "${DNSDOMAIN}" = "lan-quebec.avencall.com" ]; then
-		MIRROR="192.168.32.250:3142"
-		#MIRROR="mirror.lan-quebec.avencall.com:3142"
-	fi
-	if [ "${DNSDOMAIN}" = "atarakt.com" ]; then
-		MIRROR="192.168.11.1:3142"
-	fi
+    MIRROR=
+    if [ "${DNSDOMAIN}" = "lan-puteaux.avencall.com" ]; then
+        MIRROR="mirror.lan-puteaux.avencall.com:3142"
+    fi
+    if [ "${DNSDOMAIN}" = "lan-limonest.avencall.com" ]; then
+        MIRROR="mirror.lan-limonest.avencall.com:3142"
+    fi
+    if [ "${DNSDOMAIN}" = "lan-quebec.avencall.com" ]; then
+        MIRROR="mirror.lan-quebec.avencall.com:3142"
+    fi
 
+    if [ -n "${MIRROR}" ]; then
+        echo "Local config selected, using mirror: ${MIRROR}" >>/tmp/location_config.log
 
-	if [ -n "${MIRROR}" ]; then
-		echo "Local config selected, using mirror: ${MIRROR}" >>/tmp/location_config.log
+        # do not ask questions about proxy
+        db_fset mirror/protocol seen true
+        db_fset mirror/http/proxy seen true
 
-		# do not ask questions about proxy
-		db_fset mirror/protocol seen true
-		db_fset mirror/http/proxy seen true
-
-		db_set mirror/country "enter information manually"
-		db_set mirror/http/countries "enter information manually"
-		db_set mirror/http/hostname "${MIRROR}"
-		db_set mirror/http/mirror "${MIRROR}"
-		db_set apt-setup/hostname "${MIRROR}"
-	fi
+        db_set mirror/country "enter information manually"
+        db_set mirror/http/countries "enter information manually"
+        db_set mirror/http/hostname "${MIRROR}"
+        db_set mirror/http/mirror "${MIRROR}"
+        db_set apt-setup/hostname "${MIRROR}"
+    fi
 fi
 
 # discovery
@@ -62,17 +57,17 @@ touch ${CUST_PRESEED}
 
 # run classes early_script scripts with a preserved order
 if [ -n "${CLASSES}" ]; then
-	for CLASS in ${CLASSES}; do
-		preseed_fetch /classes/${CLASS}/early_script /tmp/early_script_${CLASS}
-		chmod a+x /tmp/early_script_${CLASS}
-		export CLASS
-		log-output -t early_script_${CLASS} sh /tmp/early_script_${CLASS}
-	done
+    for CLASS in ${CLASSES}; do
+        preseed_fetch /classes/${CLASS}/early_script /tmp/early_script_${CLASS}
+        chmod a+x /tmp/early_script_${CLASS}
+        export CLASS
+        log-output -t early_script_${CLASS} sh /tmp/early_script_${CLASS}
+    done
 fi
 
 if ! grep -q "base-installer/kernel/image" ${CUST_PRESEED}; then
-	# using db_set is not possible for 'select' parameters, only for strings
-	echo "d-i base-installer/kernel/image select linux-image-2.6-${KERN_FLAVOUR}" >>${CUST_PRESEED}
+    # using db_set is not possible for 'select' parameters, only for strings
+    echo "d-i base-installer/kernel/image select linux-image-2.6-${KERN_FLAVOUR}" >>${CUST_PRESEED}
 fi
 
 if [ "${DNSDOMAIN}" = "lan-quebec.avencall.com" ]; then
