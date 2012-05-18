@@ -29,6 +29,10 @@ else
     if [ "${DNSDOMAIN}" = "lan-quebec.avencall.com" ]; then
         MIRROR="mirror.lan-quebec.avencall.com:3142"
     fi
+    if [ "${DNSDOMAIN}" = "atarakt.com" ]; then
+        MIRROR="192.168.11.1:3142"
+    fi
+
 
     if [ -n "${MIRROR}" ]; then
         echo "Local config selected, using mirror: ${MIRROR}" >>/tmp/location_config.log
