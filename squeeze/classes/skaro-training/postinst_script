@@ -39,6 +39,11 @@ pkg_manager -y install dahdi-linux-modules-${KERN_REL}
 scr_progress
 export LANG=en_US.UTF-8
 pkg_manager -y install pf-xivo
+# add user formation
+pkg_manager -y install gnome-desktop-environment xserver-xorg evince  iceweasel openoffice.org-writer
+useradd formation
+echo formation | passwd formation formation --stdin
+echo "formation ALL=(ALL) ALL" >>/etc/sudoers
 scr_progress
 
 scr_progress_done
