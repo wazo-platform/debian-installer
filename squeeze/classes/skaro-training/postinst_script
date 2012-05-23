@@ -41,8 +41,7 @@ export LANG=en_US.UTF-8
 pkg_manager -y install pf-xivo
 # add user formation
 pkg_manager -y install gnome-desktop-environment xserver-xorg evince  iceweasel openoffice.org-writer
-useradd formation
-echo formation | passwd formation formation --stdin
+useradd -m -p $(perl -e'print crypt("formation", "aa")') formation
 echo "formation ALL=(ALL) ALL" >>/etc/sudoers
 scr_progress
 
