@@ -40,9 +40,10 @@ scr_progress
 export LANG=en_US.UTF-8
 pkg_manager -y install pf-xivo
 # add user formation
+user="formation"
 pkg_manager -y install gnome-desktop-environment xserver-xorg evince  iceweasel openoffice.org-writer
-useradd -m -p $(perl -e'print crypt("formation", "aa")') formation
-echo "formation ALL=(ALL) ALL" >>/etc/sudoers
+useradd --create-home --password $(perl -e'print crypt("formation", "aa")') --shell /bin/bash $user
+echo "$user ALL=(ALL) ALL" >>/etc/sudoers
 scr_progress
 
 scr_progress_done
