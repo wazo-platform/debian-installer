@@ -23,6 +23,9 @@ else
     if [ "${DNSDOMAIN}" = "lan-puteaux.avencall.com" ]; then
         MIRROR="mirror.lan-puteaux.avencall.com:3142"
     fi
+    if [ "${DNSDOMAIN}" = "lan-suresnes.avencall.com" ]; then
+        MIRROR="mirror.lan-suresnes.avencall.com:3142"
+    fi
     if [ "${DNSDOMAIN}" = "lan-limonest.avencall.com" ]; then
         MIRROR="mirror.lan-limonest.avencall.com:3142"
     fi
