@@ -120,10 +120,6 @@ finish_fai()
     # remove FAI hook
     # clean rc.local
     sed -i "s:sh /var/lib/pf-fai/postinst_script_launcher.*::" /etc/rc.local
-
-
-    # reactivate kernel printk on the console
-    sysctl -w kernel.printk="8 4 1 7"
 }
 
 export PKG_MANAGER_TRIES=3
@@ -168,9 +164,6 @@ else
     CLASSES=$(cat ${POSTINSTDIR}/classes)
     KERN_REL=$(uname -r)
     KERN_FLAVOUR=$(echo ${KERN_REL} | cut -d\- -f3)
-
-    # suppress low-level kernel printk on the console (destroying the proper FAI display)
-    sysctl -w kernel.printk="4 4 1 7"
 
     scr_print "Base installation in progress"
 
