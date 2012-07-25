@@ -119,7 +119,7 @@ finish_fai()
 
     # remove FAI hook
     # clean rc.local
-    sed -i "s:sh /var/lib/pf-fai/postinst_script_launcher.*::" /etc/rc.local
+    sed -i "s:sh /var/lib/xivo-fai/postinst_script_launcher.*::" /etc/rc.local
 }
 
 export PKG_MANAGER_TRIES=3
@@ -185,7 +185,7 @@ else
     pkg_manager -y purge dhcp-client
     pkg_manager -y install ssh dhcp3-client postfix sudo vim-nox bzip2 \
         less iputils-ping host traceroute popularity-contest linuxlogo \
-        pf-fai pf-sys-ssh
+        xivo-fai pf-sys-ssh
     pkg_manager -y purge exim4-base exim4-config tasksel tasksel-data nvi
     scr_progress
 

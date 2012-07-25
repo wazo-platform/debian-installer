@@ -6,14 +6,14 @@
 # Required-Stop:     $local_fs $remote_fs $syslog $named $network
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: pf-fai xivo installation script
+# Short-Description: xivo-fai installation script
 # Description:      Proformatique xivo postins fai scripts
 ### END INIT INFO
 
 
 # Parameters
-export POSTINSTDIR=/var/lib/pf-fai
-export POSTINST_LOG=/var/log/pf-fai/postinst.log
+export POSTINSTDIR=/var/lib/xivo-fai
+export POSTINST_LOG=/var/log/xivo-fai/postinst.log
 
 
 ###########################################################################

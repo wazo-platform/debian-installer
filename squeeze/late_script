@@ -3,11 +3,11 @@
 # ensure *any* failure is reported
 set -e
 
-LOGDIR=/var/log/pf-fai
+LOGDIR=/var/log/xivo-fai
 mkdir -p /target/${LOGDIR}
 mv /tmp/location_config.log /target/${LOGDIR}/
 
-export POSTINSTDIR=/var/lib/pf-fai
+export POSTINSTDIR=/var/lib/xivo-fai
 mkdir -p /target/${POSTINSTDIR}
 
 CLASSES=$(debconf-get auto-install/classes | sed 's/,/ /g')
