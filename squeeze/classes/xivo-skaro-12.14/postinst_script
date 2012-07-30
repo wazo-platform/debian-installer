@@ -5,7 +5,7 @@
 scr_print "Bootstrapping..."
 
 # looking for the proper XIVO version
-pkg_manager -y install xivo-fai xivo-fai-skaro-12.14
+pkg_manager -y install xivo-fai-skaro-12.14
 pkg_manager update
 
 # packages containing source lists could be upgradable
