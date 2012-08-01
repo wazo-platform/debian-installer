@@ -184,8 +184,7 @@ else
     #  to avoid debconf user request for this critical event)
     pkg_manager -y purge dhcp-client
     pkg_manager -y install ssh dhcp3-client postfix sudo vim-nox bzip2 \
-        less iputils-ping host traceroute popularity-contest linuxlogo \
-        xivo-fai pf-sys-ssh
+        less iputils-ping host traceroute popularity-contest linuxlogo
     pkg_manager -y purge exim4-base exim4-config tasksel tasksel-data nvi
     scr_progress
 
