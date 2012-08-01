@@ -1,0 +1,82 @@
+#!/bin/sh
+
+# ensure *any* failure is reported
+set -e
+
+LOGDIR=/var/log/xivo-fai
+mkdir -p /target/${LOGDIR}
+mv /tmp/location_config.log /target/${LOGDIR}/
+
+export POSTINSTDIR=/var/lib/xivo-fai
+mkdir -p /target/${POSTINSTDIR}
+
+CLASSES=$(debconf-get auto-install/classes | sed 's/,/ /g')
+echo "${CLASSES}" >/target/${POSTINSTDIR}/classes
+
+SUITE=$(debconf-get mirror/codename)
+echo "${SUITE}" >/target/${POSTINSTDIR}/suite
+
+export CLASSES SUITE
+
+# work around buggy udev rule
+sed -i 's/allow-hotplug/auto/' /target/etc/network/interfaces
+#rm -f /target/etc/udev/rules.d/*_persistent-net.rules
+
+# load essential modules
+# (always needed modules only, avoid spurious kernel messages during install
+echo "ipv6" >>/target/etc/modules
+
+# needed to update time (see postinst_script for full explanation)
+# Duck: since 2009-01-19 the '--force-yes' option is needed for an unexplainable reason...
+apt-install -y --force-yes ntpdate
+
+# boot logs are quite useful
+echo "BOOTLOGD_ENABLE=Yes" >/target/etc/default/bootlogd
+
+# avoid extraneous checkfs
+touch /target/fastboot
+
+# install postinst commands
+preseed_fetch /postinst_script_launcher /target/${POSTINSTDIR}/postinst_script_launcher
+preseed_fetch /postinst_script /target/${POSTINSTDIR}/postinst_script
+mkdir /target/${POSTINSTDIR}/postinst.d
+# install classes postinst scripts with a preserved order
+N=0
+if [ -n "${CLASSES}" ]; then
+    for CLASS in ${CLASSES}; do
+        if [ $(echo -n ${N} | wc -c) == 1 ]; then
+            NSTR="0${N}"
+        else
+            NSTR="${N}"
+        fi
+        preseed_fetch /classes/${CLASS}/postinst_script /target/${POSTINSTDIR}/postinst.d/${NSTR}_${CLASS}
+        N=$(( ${N} + 1 ))
+    done
+fi
+chmod a+x /target/${POSTINSTDIR}/*script*
+sed -i "s:^\(exit 0\):sh ${POSTINSTDIR}/postinst_script_launcher\n\1:" /target/etc/rc.local
+
+
+# Late work
+
+preseed_fetch /late_script_target /target/tmp/late_script_target
+log-output -t late_script_target chroot /target sh /tmp/late_script_target
+
+# helpers to late_script_*
+# (KERN_REL is needed because the installed kernel and the running d-i kernel may not be the same)
+export KERN_REL=$(ls /target/lib/modules/ | sort | head -n 1)
+export KMOD_DIR=/lib/modules/${KERN_REL}/updates
+chroot /target mkdir -p ${KMOD_DIR}
+
+# run custom late_config commands if needed
+if [ -n "${CLASSES}" ]; then
+    for CLASS in ${CLASSES}; do
+        preseed_fetch /classes/${CLASS}/late_script /tmp/late_script_${CLASS}
+        export CLASS
+        log-output -t late_script_${CLASS} sh /tmp/late_script_${CLASS}
+    done
+fi
+
+# ensure added drivers are taken into account before reboot
+chroot /target depmod -a ${KERN_REL}
+
