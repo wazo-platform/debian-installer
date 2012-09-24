@@ -167,7 +167,7 @@ pkg_manager -y install ssh dhcp3-client postfix sudo vim-nox bzip2 \
     xivo-fai pf-sys-ssh locate htop iftop nmap lsof tshark telnet \
     tcpdump multitail screen mtr-tiny patch tree curl ldap-utils \
     bash-completion whois pciutils ngrep dstat sysstat libxml2-utils \
-    arping p7zip python-pexpect telnet unrar asterisk-moh-opsound-wav \
+    arping p7zip python-pexpect telnet asterisk-moh-opsound-wav \
     asterisk-moh-opsound-g722 asterisk-moh-opsound-gsm
 pkg_manager -y purge exim4-base exim4-config tasksel tasksel-data nvi
 scr_progress
