@@ -31,6 +31,7 @@ db_set mirror/http/hostname "${mirror}"
 db_set mirror/http/mirror "${mirror}"
 db_set apt-setup/hostname "${mirror}"
 
+
 # discovery
 export kernel_flavour=$(uname -r | cut -d\- -f3)
 if [ "$kernel_flavour" = "486" ]; then
