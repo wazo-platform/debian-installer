@@ -205,7 +205,7 @@ cat > /root/.screenrc << EOF
 defscrollback 10000
 # Set the caption on the bottom line
 caption always "%{= kw}%-w%{= BW}%n %t%{-}%+w %-= @%H - %LD %d %LM - %c"
-shell -$SHELL
+shell -/bin/bash
 EOF
 
 # miscellaneous configuration
