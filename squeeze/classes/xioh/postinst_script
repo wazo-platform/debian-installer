@@ -1,0 +1,19 @@
+#!/bin/sh
+
+echo 'Install xioh driver'
+
+cd /tmp
+wget http://mirror.xivo.fr/fai/xioh.tgz
+tar xvzf xioh.tgz
+rsync -av /tmp/xioh-install/etc/ /etc/
+insserv xioh
+rsync -av /tmp/xioh-install/modules/xioh /lib/modules/`uname -r`
+rm /lib/modules/`uname -r`/kernel/drivers/net/e1000/e1000.ko
+depmod -a
+cp /tmp/xioh-install/thirdparty/IxPiuMicrocode.dat /lib/firmware/
+mkdir /usr/share/doc/xioh
+cp /tmp/xioh-install/README /usr/share/doc/xioh
+mkdir /usr/share/doc/IxPiuMicrocode
+cp /tmp/xioh-install/thirdparty/IxPiuMicrocode.license /usr/share/doc/IxPiuMicrocode
+sed -i '/SUBSYSTEM/d' /etc/udev/rules.d/70-persistent-net.rules
+echo "You have to configure dahdi, please read /usr/share/doc/xioh/README"
