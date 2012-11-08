@@ -18,7 +18,4 @@ mkdir /usr/share/doc/IxPiuMicrocode
 cp /tmp/xioh-install/thirdparty/IxPiuMicrocode.license /usr/share/doc/IxPiuMicrocode
 # cleanup net rules
 sed -i '/SUBSYSTEM/d' /etc/udev/rules.d/70-persistent-net.rules
-# fix duplicate line in /etc/default/grub
-sed -i '/^GRUB_SERIAL_COMMAND="serial --speed.*"/d' /etc/default/grub
-update-grub
 echo "You have to configure dahdi, please read /usr/share/doc/xioh/README"
