@@ -1,7 +1,7 @@
 #!/bin/sh
 
 echo 'Install xioh driver'
-
+apt-get install -y rsync > /dev/null
 cd /tmp
 wget http://mirror.xivo.fr/fai/xioh.tgz
 tar xvzf xioh.tgz
