@@ -1,2 +1,10 @@
 #!/bin/sh
 
+if [ -e /e1000.ko ]
+then
+	modprobe -r e1000
+	insmod /e1000.ko
+else
+	echo "Can't find e1000 replacement module."
+fi
+
