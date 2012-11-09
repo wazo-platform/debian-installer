@@ -16,6 +16,9 @@ cp /tmp/xioh-install/README /usr/share/doc/xioh
 # install IxPiuMicrocode data
 mkdir /usr/share/doc/IxPiuMicrocode
 cp /tmp/xioh-install/thirdparty/IxPiuMicrocode.license /usr/share/doc/IxPiuMicrocode
+# fix grub2 defaults
+sed -i 's/^\(GRUB_CMDLINE_LINUX_DEFAULT\).*/\1=""/' /etc/default/grub
+sed -i 's/^\(GRUB_CMDLINE_LINUX\)=.*/\1="console=ttyS0,115200n8"/' /etc/default/grub
 # cleanup net rules
 sed -i '/SUBSYSTEM/d' /etc/udev/rules.d/70-persistent-net.rules
 echo "You have to configure dahdi, please read /usr/share/doc/xioh/README"
