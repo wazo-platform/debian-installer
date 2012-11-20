@@ -44,7 +44,7 @@ mkdir /target/${POSTINSTDIR}/postinst.d
 N=0
 if [ -n "${CLASSES}" ]; then
     for CLASS in ${CLASSES}; do
-        if [ $(echo -n ${N} | wc -c) == 1 ]; then
+        if [ $(echo -n ${N} | wc -c) -eq 1 ]; then
             NSTR="0${N}"
         else
             NSTR="${N}"
