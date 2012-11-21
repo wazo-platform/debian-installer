@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo 'Install xioh driver'
+echo 'XiOH configuration'
 apt-get install -y rsync > /dev/null
 cd /tmp
 wget http://mirror.xivo.fr/fai/xioh.tgz
@@ -22,4 +22,4 @@ sed -i 's/^\(GRUB_CMDLINE_LINUX\)=.*/\1="console=ttyS0,115200n8"/' /etc/default/
 update-grub > /dev/null
 # cleanup net rules
 sed -i '/SUBSYSTEM/d' /etc/udev/rules.d/70-persistent-net.rules
-echo "You have to configure dahdi, please read /usr/share/doc/xioh/README"
+echo "XiOH setup done, please read /usr/share/doc/xioh/README"
