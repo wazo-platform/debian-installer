@@ -22,6 +22,4 @@ sed -i 's/^\(GRUB_CMDLINE_LINUX\)=.*/\1="console=ttyS0,115200n8"/' /etc/default/
 update-grub > /dev/null
 # cleanup net rules
 sed -i '/SUBSYSTEM/d' /etc/udev/rules.d/70-persistent-net.rules
-# including dahdi-channels.conf
-sed -i 's/^#\(include dahdi-channels.conf\)/\1/g' /etc/asterisk/chan_dahdi.conf
 echo "XiOH setup done, please read /usr/share/doc/xioh/README"
