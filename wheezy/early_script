@@ -53,7 +53,7 @@ fi
 
 if ! grep -q "base-installer/kernel/image" $custom_preseed; then
     # using db_set is not possible for 'select' parameters, only for strings
-    echo "d-i base-installer/kernel/image select linux-image-2.6-$kernel_flavour" >>$custom_preseed
+    echo "d-i base-installer/kernel/image select linux-image-$kernel_flavour" >>$custom_preseed
 fi
 
 if [ "$dnsdomain" = "lan-quebec.avencall.com" ]; then
