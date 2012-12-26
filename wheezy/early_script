@@ -59,13 +59,13 @@ fi
 if [ "$dnsdomain" = "lan-quebec.avencall.com" ]; then
     cat > $custom_preseed << EOF
 d-i debian-installer/country string CA
-d-i keymap select us
+d-i keyboard-configuration/xkb-keymap us
 d-i time/zone string US/Eastern
 EOF
 else
     cat > $custom_preseed << EOF
 d-i debian-installer/country string FR
-d-i keymap select fr-latin9
+d-i keyboard-configuration/xkb-keymap fr-latin9
 d-i time/zone string Europe/Paris
 EOF
 fi
