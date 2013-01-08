@@ -27,12 +27,13 @@ sed -i 's/allow-hotplug/auto/' /target/etc/network/interfaces
 echo "ipv6" >>/target/etc/modules
 
 # needed to update time (see postinst_script for full explanation)
-# Duck: since 2009-01-19 the '--force-yes' option is needed for an unexplainable reason...
 apt-install -y --force-yes ntpdate
 
 # boot logs are quite useful
 echo "BOOTLOGD_ENABLE=Yes" >/target/etc/default/bootlogd
 
+# disable netjet, for dahdi
+echo "blacklist netjet" >> /target/etc/modprobe.d/blacklist.conf
 # avoid extraneous checkfs
 touch /target/fastboot
 
