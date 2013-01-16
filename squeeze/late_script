@@ -33,7 +33,7 @@ apt-install -y --force-yes ntpdate
 echo "BOOTLOGD_ENABLE=Yes" >/target/etc/default/bootlogd
 
 # disable netjet, for dahdi
-echo "blacklist netjet" >> /target/etc/modprobe.d/blacklist.conf
+# echo "blacklist netjet" >> /target/etc/modprobe.d/blacklist.conf
 # avoid extraneous checkfs
 touch /target/fastboot
 
