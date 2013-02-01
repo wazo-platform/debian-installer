@@ -38,7 +38,7 @@ fi
 pkg_manager -y install dahdi-linux-modules-${KERN_REL} dahdi
 scr_progress
 export LANG=en_US.UTF-8
-pkg_manager -y install pf-xivo 
+pkg_manager -y install pf-xivo
 pkg_manager -y install asterisk-moh-opsound-g722 asterisk-moh-opsound-gsm asterisk-moh-opsound-wav
 pkg_manager -y install xivo-dev-ssh-pubkeys
 scr_progress
