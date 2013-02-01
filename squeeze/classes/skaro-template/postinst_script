@@ -61,13 +61,10 @@ scr_println "XIVO configuration in progress..."
 		chown asterisk:www-data ${CONFIG}
 		chmod 660 ${CONFIG}
 	fi
-	# (restart with new config)
-	invoke-rc.d dahdi restart
 ) >/dev/null 2>/dev/null || true
 scr_progress
 
-# Asterisk proper start
-invoke-rc.d asterisk restart
+xivo-service restart all
 scr_progress
 
 scr_progress_done
