@@ -1,4 +1,5 @@
 #!/bin/sh
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 # === Bootstrap ===
 
@@ -50,6 +51,9 @@ scr_progress_done
 # === Configuration ===
 
 scr_println "XIVO configuration in progress..."
+
+# initialize databases
+xivo-update-db
 
 # Zaptel config
 # (ignore errors caused by detection and config generation)

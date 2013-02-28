@@ -6,7 +6,7 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 scr_print "Bootstrapping..."
 
 # looking for the proper XIVO version
-pkg_manager -y install xivo-fai-dev xivo-fai-skaro-dev
+pkg_manager -y install xivo-fai-skaro-13.03
 pkg_manager update
 
 # packages containing source lists could be upgradable
@@ -42,7 +42,6 @@ scr_progress
 export LANG=en_US.UTF-8
 pkg_manager -y install pf-xivo
 pkg_manager -y install asterisk-moh-opsound-g722 asterisk-moh-opsound-gsm asterisk-moh-opsound-wav
-pkg_manager -y install xivo-dev-ssh-pubkeys
 scr_progress
 
 scr_progress_done
