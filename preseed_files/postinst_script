@@ -141,7 +141,9 @@ mirror="mirror.${dnsdomain}:3142"
 
 sed -i -r "s#http://$mirror/debian#http://ftp.$country.debian.org/debian/#" /etc/apt/sources.list
 
-echo "Acquire::http { Proxy \"http://$mirror\"; };" > /etc/apt/apt.conf
+if [ $dnsdomain != 'avencall.com' ]; then
+    echo "Acquire::http { Proxy \"http://$mirror\"; };" > /etc/apt/apt.conf
+fi
 
 scr_print "Base installation in progress"
 
