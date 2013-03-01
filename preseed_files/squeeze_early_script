@@ -17,7 +17,11 @@ echo "Subnet: $subnet" >>/tmp/location_config.log
 dnsdomain=$(debconf-get netcfg/get_domain)
 echo "DNS Domain: $dnsdomain" >>/tmp/location_config.log
 
-mirror="mirror.${dnsdomain}:3142"
+if [ $dnsdomain = 'avencall.com' ]; then
+    mirror="ftp.ca.debian.org"
+else
+    mirror="mirror.${dnsdomain}:3142"
+fi
 
 echo "Local config selected, using mirror: ${mirror}" >>/tmp/location_config.log
 
