@@ -1,0 +1,19 @@
+export postinst_dir=/var/lib/xivo-fai
+export postinst_log=/var/log/xivo-fai/postinst.log
+
+
+###########################################################################
+
+echo "Bootstrapping FAI..."
+
+mkdir -p $(dirname $postinst_log)
+echo "########################################################################" >>$postinst_log
+date >>$postinst_log
+
+com="script -a -c $postinst_dir/postinst_script $postinst_log"
+if [ -f $postinst_dir/debug ]; then
+  $com
+else
+  $com >/dev/null 2>/dev/null
+fi
+

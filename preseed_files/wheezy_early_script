@@ -1,0 +1,73 @@
+#!/bin/sh
+
+. /usr/share/debconf/confmodule
+
+classes=$(debconf-get auto-install/classes | sed 's/,/ /g')
+
+echo "Detecting location..." >>/tmp/location_config.log
+interface=$(ip link show | grep "UP" | grep "eth[0-9]" | cut -d: -f2 | sed 's/ //g')
+echo "Interface: $interface" >>/tmp/location_config.log
+
+ip_addr=$(ip addr show $interface | grep -E "\binet\b .* scope global $interface\$" | sed -r 's/^ +//' | cut -d\  -f2)
+echo "IP: $ip_addr" >>/tmp/location_config.log
+
+subnet=$(echo $ip_addr | cut -d. -f 1-2)
+echo "Subnet: $subnet" >>/tmp/location_config.log
+
+dnsdomain=$(debconf-get netcfg/get_domain)
+echo "DNS Domain: $dnsdomain" >>/tmp/location_config.log
+
+mirror="mirror.${dnsdomain}:3142"
+
+echo "Local config selected, using mirror: ${mirror}" >>/tmp/location_config.log
+
+# do not ask questions about proxy
+db_fset mirror/protocol seen true
+db_fset mirror/http/proxy seen true
+
+db_set mirror/country "enter information manually"
+db_set mirror/http/countries "enter information manually"
+db_set mirror/http/hostname "${mirror}"
+db_set mirror/http/mirror "${mirror}"
+db_set apt-setup/hostname "${mirror}"
+
+
+# discovery
+export kernel_flavour=$(uname -r | cut -d\- -f3)
+if [ "$kernel_flavour" = "486" ]; then
+  kernel_flavour="686"
+fi
+
+export custom_preseed=/tmp/custom_preseed
+touch $custom_preseed
+
+# run classes early_script scripts with a preserved order
+if [ -n "classes" ]; then
+    for CLASS in classes; do
+        preseed_fetch /classes/$class/early_script /tmp/early_script_$class
+        chmod a+x /tmp/early_script_$class
+        export CLASS
+        log-output -t early_script_$class sh /tmp/early_script_$class
+    done
+fi
+
+if ! grep -q "base-installer/kernel/image" $custom_preseed; then
+    # using db_set is not possible for 'select' parameters, only for strings
+    echo "d-i base-installer/kernel/image select linux-image-$kernel_flavour" >>$custom_preseed
+fi
+
+if [ "$dnsdomain" = "lan-quebec.avencall.com" ]; then
+    cat > $custom_preseed << EOF
+d-i debian-installer/country string CA
+d-i keyboard-configuration/xkb-keymap us
+d-i time/zone string US/Eastern
+EOF
+else
+    cat > $custom_preseed << EOF
+d-i debian-installer/country string FR
+d-i keyboard-configuration/xkb-keymap fr-latin9
+d-i time/zone string Europe/Paris
+EOF
+fi
+
+debconf-set-selections $custom_preseed
