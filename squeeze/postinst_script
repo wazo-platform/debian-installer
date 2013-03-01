@@ -158,6 +158,11 @@ scr_progress
 pkg_manager -y dist-upgrade
 scr_progress
 
+# remove unused lv, partman limitation
+unused_lv="/dev/data/to_remove"
+if [ -L $unused_lv ]; then
+    lvremove -f $unused_lv
+fi
 # install extra packages
 # (dhcp-client has to be purged _before_ dhcp3-client installation
 #  to avoid debconf user request for this critical event)
