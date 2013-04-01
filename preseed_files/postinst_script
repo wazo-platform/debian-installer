@@ -1,0 +1,243 @@
+#!/bin/bash
+
+set +x
+
+DEBIAN_FRONTEND=noninteractive
+DEBIAN_PRIORITY=critical
+DEBCONF_NOWARNINGS=yes
+export $DEBIAN_FRONTEND $DEBCONF_PRIORITY $DEBCONF_NOWARNINGS
+
+
+scr_clear()
+{
+    clear >/dev/tty1
+}
+
+scr_print()
+{
+    echo -en $1 >/dev/tty1
+    #echo "$1" >/dev/tty1
+}
+
+scr_println()
+{
+    scr_print "$1\n\r"
+}
+
+scr_println_ok()
+{
+    scr_println "\033[0;32;40m$1\033[0;38;40m"
+}
+
+scr_println_error()
+{
+    scr_println "\033[0;31;40m$1\033[0;38;40m"
+}
+
+scr_progress()
+{
+    scr_print "."
+}
+
+scr_progress_done()
+{
+    scr_println_ok "DONE"
+}
+
+scr_begin()
+{
+    scr_print "\033[0;38;40m"
+}
+
+scr_end()
+{
+    scr_print "\033[0;37;40m"
+}
+
+exit_error()
+{
+    scr_println
+    scr_println
+    scr_println_error "Installation Failed !!!"
+    scr_println
+    scr_println "Press Enter to login and analyse the installation log ($postinst_log)."
+    scr_println
+    read z
+
+    scr_end
+    exit 1
+}
+
+display_final_info()
+{
+    scr_println
+    scr_println_ok "Installation successful !!!"
+
+    MSG=$(ip addr show | grep "inet .* scope global")
+    scr_println
+    scr_println "Network information:"
+    scr_println "${MSG}"
+
+    scr_println
+    scr_println "Press Enter to login and configure."
+    scr_println
+    read z
+}
+
+finish_fai()
+{
+
+    rm /etc/apt/apt.conf
+
+    # packages cleanup
+    pkg_manager clean
+
+    # remove FAI hook
+    # clean rc.local
+    sed -i "s:sh /var/lib/xivo-fai/postinst_script_launcher::" /etc/rc.local
+}
+
+pkg_manager()
+{
+    # in this subshell, the trap on ERR is _not_ inherited
+    (
+        for I in $(seq 1 3); do
+            apt-get -o Dpkg::Options::="--force-confold" $*
+            if [ $? = 0 ]; then
+                exit 0
+            fi
+        done
+        exit 1
+    )
+    if [ $? != 0 ]; then
+        exit_error
+    fi
+}
+
+
+
+# catch errors
+trap exit_error ERR
+
+scr_begin
+scr_clear
+scr_println
+scr_println "=*=  XiVO Fully Automatic Installation =*="
+scr_println
+
+# discovery
+SUITE=$(cat $postinst_dir/suite)
+CLASSES=$(cat $postinst_dir/classes)
+KERN_REL=$(uname -r)
+KERN_FLAVOUR=$(echo ${KERN_REL} | cut -d\- -f3)
+
+dnsdomain=$(dnsdomainname)
+if [ $dnsdomain != 'lan-quebec.avencall.com' ]; then
+    country="fr"
+else
+    country="ca"
+fi
+mirror="mirror.${dnsdomain}:3142"
+
+sed -i -r "s#http://$mirror/debian#http://ftp.$country.debian.org/debian/#" /etc/apt/sources.list
+
+if [ $dnsdomain != 'avencall.com' ] || [ $dnsdomain != 'xivo.fr' ]; then
+    echo "Acquire::http { Proxy \"http://$mirror\"; };" > /etc/apt/apt.conf
+fi
+
+scr_print "Base installation in progress"
+
+# configure syslog
+echo "*.* /dev/tty12" >>/etc/rsyslog.conf
+invoke-rc.d rsyslog restart
+scr_progress
+
+pkg_manager update
+scr_progress
+
+# fetch security and other updates
+
+pkg_manager -y dist-upgrade
+scr_progress
+
+# remove unused lv, partman limitation
+unused_lv="/dev/data/to_remove"
+if [ -L $unused_lv ]; then
+    lvremove -f $unused_lv
+fi
+# install extra packages
+# (dhcp-client has to be purged _before_ dhcp3-client installation
+#  to avoid debconf user request for this critical event)
+pkg_manager -y purge dhcp-client
+pkg_manager -y install ssh dhcp3-client postfix sudo vim-nox bzip2 \
+    less iputils-ping host traceroute popularity-contest linuxlogo \
+    xivo-fai pf-sys-ssh locate htop iftop nmap lsof tshark telnet \
+    tcpdump multitail screen mtr-tiny patch tree curl ldap-utils \
+    bash-completion whois pciutils ngrep dstat sysstat libxml2-utils \
+    arping p7zip python-pexpect telnet
+pkg_manager -y purge exim4-base exim4-config tasksel tasksel-data nvi
+scr_progress
+
+# configure vim
+sed -i 's/"syntax on/syntax on/' /etc/vim/vimrc
+sed -i 's/"set background=dark/set background=dark/' /etc/vim/vimrc
+
+# create bash profil
+cat > /etc/profile.d/xivo.sh << EOF
+# Commented out, don't overwrite xterm -T "title" -n "icontitle" by default.
+# If this is an xterm set the title to user@host:dir
+# (This modifies the terminal title, not the PS1 ...)
+case "$TERM" in
+xterm*|rxvt*)
+    PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"'
+    ;;
+*)
+    ;;
+esac
+
+# enable bash completion in interactive shells
+if [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+fi
+
+export LS_OPTIONS='--color=auto'
+eval "$(dircolors)"
+alias ls='ls $LS_OPTIONS'
+alias ll='ls $LS_OPTIONS -l'
+EOF
+
+# screenrc
+cat > /root/.screenrc << EOF
+# set a big scrolling buffer
+defscrollback 10000
+# Set the caption on the bottom line
+caption always "%{= kw}%-w%{= BW}%n %t%{-}%+w %-= @%H - %LD %d %LM - %c"
+shell -/bin/bash
+EOF
+
+# miscellaneous configuration
+chmod 700 /root
+## no disclosure when logouting
+echo "clear" >/root/.bash_logout
+## nice console login prompt
+sed -i 's/getty 38400 tty/getty -f \/etc\/issue.linuxlogo 38400 tty/' /etc/inittab
+sed -i 's/-L [0-9]/-L 3/' /etc/linux_logo.conf
+invoke-rc.d linuxlogo restart
+telinit q
+scr_progress
+
+scr_progress_done
+
+# run custom postinst commands if needed
+for script in $(find $postinst_dir/postinst.d -mindepth 1 -maxdepth 1 | sort); do
+    . $script
+done
+
+pkg_manager update
+scr_progress
+
+finish_fai
+display_final_info
+
+scr_end
+
