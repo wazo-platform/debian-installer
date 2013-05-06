@@ -29,7 +29,7 @@ done
 
 apt-get update > /dev/null
 
-#sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT="quiet"/a GRUB_CMDLINE_LINUX_DEFAULT="quiet rootdelay=10"' /etc/default/grub
+sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="quiet"/GRUB_CMDLINE_LINUX_DEFAULT="quiet rootdelay=10"/' /etc/default/grub 
 sed -i '/^GRUB_CMDLINE_LINUX=""/a GRUB_TERMINAL="serial console"' /etc/default/grub
 sed -i '/^GRUB_TERMINAL/a GRUB_SERIAL_COMMAND="serial --speed=115200 --unit=0 --word=8 --parity=no --stop=1"' /etc/default/grub
 
