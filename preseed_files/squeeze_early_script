@@ -18,7 +18,7 @@ dnsdomain=$(debconf-get netcfg/get_domain)
 echo "DNS Domain: $dnsdomain" >>/tmp/location_config.log
 
 if [ $dnsdomain = 'avencall.com' ] || [ $dnsdomain = 'xivo.fr' ]; then
-    mirror="ftp.ca.debian.org"
+    mirror="http.debian.net"
 else
     mirror="mirror.${dnsdomain}:3142"
 fi
