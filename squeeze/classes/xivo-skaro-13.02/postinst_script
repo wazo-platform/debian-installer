@@ -66,6 +66,10 @@ scr_println "XIVO configuration in progress..."
 scr_progress
 
 xivo-service restart all
+# install production mirror
+pkg_manager -y install xivo-fai-skaro
+pkg_manager update
+
 scr_progress
 
 scr_progress_done

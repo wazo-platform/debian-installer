@@ -71,8 +71,7 @@ xivo-update-db
 scr_progress
 
 xivo-service restart all
-
-# cleanup archive xivo-fai-skaro file
+# install production mirror
 pkg_manager -y install xivo-fai-skaro
 pkg_manager update
 
