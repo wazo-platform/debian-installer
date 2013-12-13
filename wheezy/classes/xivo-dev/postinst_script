@@ -7,7 +7,7 @@ scr_print "Bootstrapping..."
 
 # looking for the proper XIVO version
 pkg_manager update
-pkg_manager -y install xivo-wheezy-fai xivo-wheezy-fai-skaro-dev
+pkg_manager -y install xivo-fai-dev
 
 pkg_manager update
 
