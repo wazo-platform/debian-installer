@@ -139,7 +139,7 @@ else
 fi
 mirror="mirror.${dnsdomain}:3142"
 
-sed -i -r "s#http://$mirror/debian#http://http.debian.net/debian/#" /etc/apt/sources.list
+sed -i -r "s#http://$mirror/debian#http://ftp.$country.debian.org/debian/#" /etc/apt/sources.list
 
 if [ $dnsdomain != 'avencall.com' ] || [ $dnsdomain != 'xivo.fr' ]; then
     echo "Acquire::http { Proxy \"http://$mirror\"; };" > /etc/apt/apt.conf
@@ -171,7 +171,7 @@ fi
 pkg_manager -y purge dhcp-client
 pkg_manager -y install ssh dhcp3-client postfix sudo vim-nox bzip2 \
     less iputils-ping host traceroute popularity-contest linuxlogo \
-    xivo-wheezy-fai pf-sys-ssh locate htop iftop nmap lsof tshark telnet \
+    pf-sys-ssh locate htop iftop nmap lsof tshark telnet \
     tcpdump multitail screen mtr-tiny patch tree curl ldap-utils \
     bash-completion whois pciutils ngrep dstat sysstat libxml2-utils \
     arping p7zip python-pexpect telnet
