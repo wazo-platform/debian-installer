@@ -10,7 +10,7 @@ INSTALLER_LIST_FILE=/etc/apt/sources.list.d/installer.list
 
 cat << EOF >> ${INSTALLER_LIST_FILE}
 # Main devel
-deb http://mirror.xivo.fr/debian xivo-fai-template main
+deb http://mirror.xivo.fr/debian xivo-template main
 #deb-src http://mirror.xivo.fr/debian xivo-template main
 EOF
 pkg_manager update
