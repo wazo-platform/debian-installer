@@ -17,6 +17,18 @@ APT::Install-Suggests "false";
 APT::Get::AutomaticRemove "true";
 EOF
 
+cat << EOF >> /etc/apt/sources.list.d/pf.sources.list
+# Main devel
+deb http://mirror.xivo.fr/debian xivo-five main
+#deb-src http://mirror.xivo.fr/debian xivo-five main
+EOF
+
+for FILE in $(find /etc/apt -type f); do
+    sed -i "s/#SUITE#/${SUITE}/g" ${FILE}
+done
+
+apt-get update > /dev/null
+
 sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="quiet"/GRUB_CMDLINE_LINUX_DEFAULT="quiet rootdelay=2"/' /etc/default/grub 
 sed -i '/^GRUB_CMDLINE_LINUX=""/a GRUB_TERMINAL="serial console"' /etc/default/grub
 sed -i '/^GRUB_TERMINAL/a GRUB_SERIAL_COMMAND="serial --speed=115200 --unit=0 --word=8 --parity=no --stop=1"' /etc/default/grub
