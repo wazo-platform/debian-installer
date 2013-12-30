@@ -6,7 +6,16 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 scr_print "Bootstrapping..."
 
 # looking for the proper XIVO version
+INSTALLER_LIST_FILE=/etc/apt/sources.list.d/installer.list
+
+cat << EOF >> ${INSTALLER_LIST_FILE}
+# Main devel
+deb http://mirror.xivo.fr/debian xivo-five main
+#deb-src http://mirror.xivo.fr/debian xivo-five main
+EOF
 pkg_manager update
+
+rm ${INSTALLER_LIST_FILE}
 pkg_manager -y install xivo-fai
 
 pkg_manager update
