@@ -15,8 +15,8 @@ deb http://mirror.xivo.fr/debian xivo-five main
 EOF
 pkg_manager update
 
-rm ${INSTALLER_LIST_FILE}
 pkg_manager -y install xivo-fai
+rm ${INSTALLER_LIST_FILE}
 
 pkg_manager update
 
