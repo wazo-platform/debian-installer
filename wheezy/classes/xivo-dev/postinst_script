@@ -24,7 +24,7 @@ pkg_manager update
 pkg_manager -y dist-upgrade
 pkg_manager update
 
-VERSION=$(apt-cache show --no-all-versions pf-xivo | grep Version | cut -d\  -f2)
+VERSION=$(apt-cache show --no-all-versions xivo | grep Version | cut -d\  -f2)
 if [ -z "${VERSION}" ]; then
 	scr_println "XIVO not found"
 	exit_error
@@ -51,7 +51,7 @@ fi
 pkg_manager -y install dahdi-linux-modules-${KERN_REL}
 scr_progress
 export LANG=en_US.UTF-8
-pkg_manager -y install pf-xivo
+pkg_manager -y install xivo
 pkg_manager -y install asterisk-moh-opsound-g722 asterisk-moh-opsound-gsm asterisk-moh-opsound-wav
 pkg_manager -y install pf-sys-ssh xivo-dev-ssh-pubkeys
 scr_progress
