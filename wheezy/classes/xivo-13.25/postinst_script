@@ -83,6 +83,8 @@ xivo-update-db
 scr_progress
 
 xivo-service restart all
+# install production mirror
+pkg_manager -y install xivo-fai
 scr_progress
 
 scr_progress_done
