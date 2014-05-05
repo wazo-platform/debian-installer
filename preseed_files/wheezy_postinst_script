@@ -15,8 +15,7 @@ scr_clear()
 
 scr_print()
 {
-    echo -en $1 >/dev/tty1
-    #echo "$1" >/dev/tty1
+    echo -en $1 | tee /dev/tty1
 }
 
 scr_println()
@@ -114,6 +113,31 @@ pkg_manager()
     fi
 }
 
+has_ip_addr_via_dhcp()
+{
+    network_interface="$(ps x | grep dhclient | grep -v grep | awk '{print $NF}' | head -n 1)"
+    if [ -z "$network_interface" ] ; then
+        echo "Could not find an interface configured by dhclient"
+        return 2
+    fi
+    if [ -n "$(ifconfig $network_interface | grep 'inet addr:')" ] ; then
+        return 0
+    fi
+    return 1
+}
+
+check_ip_address()
+{
+    tries_left=10
+    while ! has_ip_addr_via_dhcp && [ $tries_left -gt 0 ] ; do
+        sleep 3
+        tries_left=$(($tries_left - 1))
+    done
+    if [ $tries_left -eq 0 ] ; then
+        return 1  # timeout
+    fi
+    return 0
+}
 
 
 # catch errors
@@ -130,6 +154,13 @@ SUITE=$(cat $postinst_dir/suite)
 CLASSES=$(cat $postinst_dir/classes)
 KERN_REL=$(uname -r)
 KERN_FLAVOUR=$(echo ${KERN_REL} | cut -d\- -f3)
+
+echo "Checking IP address configuration"
+if ! check_ip_address ; then
+    echo "Could not get IP address. Please check your DHCP configuration. Exiting ..."
+    exit_error
+fi
+echo "IP address OK"
 
 dnsdomain=$(dnsdomainname)
 if [ $dnsdomain != 'lan-quebec.avencall.com' ]; then
