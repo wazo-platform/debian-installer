@@ -15,7 +15,7 @@ scr_clear()
 
 scr_print()
 {
-    echo -en $1 | tee /dev/tty1
+    echo -en $1 >/dev/tty1
 }
 
 scr_println()
