@@ -115,7 +115,7 @@ pkg_manager()
 
 has_ip_addr_via_dhcp()
 {
-    network_interface="$(ps x | grep dhclient | grep -v grep | awk '{print $NF}' | head -n 1)"
+    network_interface="$(find /var/run/dhclient.* -printf "%f\n" | sed -r 's/dhclient\.(.*)\.pid/\1/' | head -n 1)"
     if [ -z "$network_interface" ] ; then
         echo "Could not find an interface configured by dhclient"
         return 2
