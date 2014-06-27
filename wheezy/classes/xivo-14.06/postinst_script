@@ -10,8 +10,8 @@ INSTALLER_LIST_FILE=/etc/apt/sources.list.d/installer.list
 
 cat << EOF >> ${INSTALLER_LIST_FILE}
 # Main devel
-deb http://mirror.xivo.fr/archive xivo-14.06 main
-#deb-src http://mirror.xivo.fr/archive xivo-14.06 main
+deb http://mirror.xivo.io/archive xivo-14.06 main
+#deb-src http://mirror.xivo.io/archive xivo-14.06 main
 EOF
 pkg_manager update
 
