@@ -14,9 +14,8 @@ deb http://mirror.xivo.io/debian xivo-five main
 #deb-src http://mirror.xivo.io/debian xivo-five main
 EOF
 pkg_manager update
-pkg_manager -y install xivo-dist
 
-xivo-dist xivo-five
+pkg_manager -y install xivo-fai
 rm ${INSTALLER_LIST_FILE}
 
 pkg_manager update
