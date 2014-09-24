@@ -14,8 +14,9 @@ deb http://mirror.xivo.io/archive xivo-template main
 #deb-src http://mirror.xivo.io/archive xivo-template main
 EOF
 pkg_manager update
+pkg_manager -y install xivo-dist
 
-pkg_manager -y install xivo-fai-template
+xivo-dist xivo-template
 rm ${INSTALLER_LIST_FILE}
 
 pkg_manager update
@@ -34,7 +35,6 @@ echo ${VERSION} >$POSTINSTDIR/xivo_initial_version
 echo startup=no > /etc/default/xivo
 
 scr_progress_done
-
 
 # === Install ===
 
@@ -84,7 +84,7 @@ scr_progress
 
 xivo-service restart all
 # install production mirror
-pkg_manager -y install xivo-fai
+xivo-dist xivo-five
 scr_progress
 
 scr_progress_done
