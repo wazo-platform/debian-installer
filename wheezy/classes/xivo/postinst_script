@@ -19,17 +19,6 @@ pkg_manager -y install xivo-dist
 xivo-dist xivo-five
 rm ${INSTALLER_LIST_FILE}
 
-dnsdomain=$(debconf-get netcfg/get_domain)
-if [ "$dnsdomain" = "lan-quebec.avencall.com" ]; then
-	DEV_TOOLS_LIST_FILE=/etc/apt/sources.list.d/xivo-dev-tools.list
-cat << EOF >> ${DEV_TOOLS_LIST_FILE}
-deb http://mirror.xivo.fr/debian xivo-dev-tools main
-#deb-src http://mirror.xivo.io/debian xivo-dev-tools main
-EOF
-	pkg_manager update
-	pkg_manager -y install xivo-acceptance-server
-fi
-
 pkg_manager update
 
 # packages containing source lists could be upgradable
