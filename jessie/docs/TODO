@@ -1,0 +1,22 @@
+debian squeeze installer 0.1
+
+TODO
+
+* partitioning :
+ - use lvm
+    /boot/
+    /dev/data/swap (2 x ram memory)
+    /dev/data/system        10G
+    /dev/data/var           20G
+* we need to find an elegant solution to rollback migration process
+ - use lvm to backup all data before migration ?
+    /dev/data/backup-system 10G
+    /dev/data/backup-var    20G
+ - lvm snapshot ?
+
+* debconf priority/medium disable, renable it ? (if necessary)
+ - check if package configuration is ok without debconf priority set to medium ?
+
+* classe xivo-skaro-dev
+ - find why the postins script is not launch during first boot (need to launch
+   it manually)
