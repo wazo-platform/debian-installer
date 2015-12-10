@@ -3,6 +3,9 @@
 # allow late preseeding via packaging
 sed -i -r 's/^DPkg::Pre-Install-Pkgs/\/\/DPkg::Pre-Install-Pkgs/' /etc/apt/apt.conf.d/70debconf
 
+# allow root login
+sed -i 's/^PermitRoolLogin without-password/PermitRoolLogin yes/' /etc/ssh/sshd_config
+
 # configure apt
 if [ -x /usr/bin/apt-key ]; then
     apt-get -y install gnupg
