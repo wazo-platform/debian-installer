@@ -213,6 +213,9 @@ scr_progress
 sed -i 's/"syntax on/syntax on/' /etc/vim/vimrc
 sed -i 's/"set background=dark/set background=dark/' /etc/vim/vimrc
 
+# configure ssh
+sed -i 's/^PermitRoolLogin without-password/PermitRoolLogin yes/' /etc/ssh/sshd_config
+
 # create bash profil
 cat > /etc/profile.d/xivo.sh << EOF
 # Commented out, don't overwrite xterm -T "title" -n "icontitle" by default.
