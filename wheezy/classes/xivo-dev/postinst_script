@@ -1,12 +1,6 @@
 #!/bin/sh
 PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
-src_print "System configuration"
-
-echo 'openssh-server openssh-server/permit-root-login boolean false' | debconf-set-selections
-
-src_progress_done
-
 # === Bootstrap ===
 
 scr_print "Bootstrapping..."
