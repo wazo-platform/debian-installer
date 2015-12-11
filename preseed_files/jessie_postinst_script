@@ -252,7 +252,7 @@ chmod 700 /root
 ## no disclosure when logouting
 echo "clear" >/root/.bash_logout
 ## nice console login prompt
-sed -i 's/getty 38400 tty/getty -f \/etc\/issue.linuxlogo 38400 tty/' /etc/inittab
+sed -i 's:^ExecStart=-/sbin/agetty --noclear:ExecStart=-/sbin/agetty -f /etc/issue.linuxlogo --noclear:' /lib/systemd/system/getty@.service
 sed -i 's/-L [0-9]/-L 3/' /etc/linux_logo.conf
 invoke-rc.d linuxlogo restart
 telinit q
