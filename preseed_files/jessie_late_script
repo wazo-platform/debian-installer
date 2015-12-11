@@ -55,22 +55,13 @@ if [ -n "${CLASSES}" ]; then
     done
 fi
 chmod a+x /target/${POSTINSTDIR}/*script*
-cat > /target/etc/systemd/system/xivo-install.service <<EOF
-[Unit]
-Description=XiVO installation script
-After=network.target
-
+sed -i "s:^\(exit 0\):sh ${POSTINSTDIR}/postinst_script_launcher\n\1:" /target/etc/rc.local
+mkdir -p /target/etc/systemd/system/rc-local.service.d
+cat > /target/etc/systemd/system/rc-local.service.d/console.conf <<EOF
 [Service]
-Type=forking
-TimeoutSec=0
 StandardInput=tty-force
 StandardOutput=tty
-ExecStart=${POSTINSTDIR}/postinst_script_launcher
-
-[Install]
-WantedBy=multi-user.target
 EOF
-ln -s /target/etc/systemd/system/xivo-install.service /target/etc/systemd/system/multi-user.target.wants/xivo-install.service
 
 # Late work
 

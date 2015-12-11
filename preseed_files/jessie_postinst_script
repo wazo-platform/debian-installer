@@ -267,6 +267,6 @@ scr_progress
 finish_fai
 display_final_info
 
-systemctl disable xivo-install.service
+rm /etc/systemd/system/rc-local.service.d/console.conf
 
 scr_end
