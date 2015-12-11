@@ -1,3 +1,5 @@
+#!/bin/sh
+
 export postinst_dir=/var/lib/xivo-fai
 export postinst_log=/var/log/xivo-fai/postinst.log
 export TERM=linux
