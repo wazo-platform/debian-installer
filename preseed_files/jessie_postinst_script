@@ -251,11 +251,7 @@ EOF
 chmod 700 /root
 ## no disclosure when logouting
 echo "clear" >/root/.bash_logout
-## nice console login prompt
-sed -i 's:^ExecStart=-/sbin/agetty --noclear:ExecStart=-/sbin/agetty -f /etc/issue.linuxlogo --noclear:' /lib/systemd/system/getty@.service
-sed -i 's/-L [0-9]/-L 3/' /etc/linux_logo.conf
-invoke-rc.d linuxlogo restart
-telinit q
+systemctl daemon-reload
 scr_progress
 
 scr_progress_done
@@ -271,7 +267,4 @@ scr_progress
 finish_fai
 display_final_info
 
-rm /lib/systemd/system/rc-local.service.d/console.conf
-
 scr_end
-
