@@ -197,9 +197,7 @@ if [ -L $unused_lv ]; then
     lvremove -f $unused_lv
 fi
 # install extra packages
-# (dhcp-client has to be purged _before_ dhcp3-client installation
-#  to avoid debconf user request for this critical event)
-pkg_manager -y purge dhcp-client
+echo 'wireshark-common wireshark-common/install-setuid boolean true' | debconf-set-selections
 pkg_manager -y install ssh postfix sudo vim-nox bzip2 \
     less iputils-ping host traceroute popularity-contest linuxlogo \
     locate htop iftop nmap lsof tshark telnet \
