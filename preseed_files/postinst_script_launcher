@@ -1,6 +1,6 @@
 export postinst_dir=/var/lib/xivo-fai
 export postinst_log=/var/log/xivo-fai/postinst.log
-
+export TERM=linux
 
 ###########################################################################
 
@@ -16,4 +16,3 @@ if [ -f $postinst_dir/debug ]; then
 else
   $com >/dev/null 2>/dev/null
 fi
-
