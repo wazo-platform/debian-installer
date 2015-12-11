@@ -60,7 +60,7 @@ mkdir -p /target/etc/systemd/system/rc-local.service.d
 cat > /target/etc/systemd/system/rc-local.service.d/console.conf <<EOF
 [Service]
 StandardInput=tty-force
-StandardOutput=journal+console
+StandardOutput=tty
 EOF
 
 # Late work
