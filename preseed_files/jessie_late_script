@@ -70,7 +70,7 @@ ExecStart=${POSTINSTDIR}/postinst_script_launcher
 [Install]
 WantedBy=multi-user.target
 EOF
-systemctl enable xivo-install.service
+ln -s /target/etc/systemd/system/multi-user.target.wants/xivo-install.service /target/etc/systemd/system/xivo-install.service
 
 # Late work
 
