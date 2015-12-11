@@ -55,6 +55,22 @@ if [ -n "${CLASSES}" ]; then
     done
 fi
 chmod a+x /target/${POSTINSTDIR}/*script*
+cat > /target/etc/systemd/system/xivo-install.service <<EOF
+[Unit]
+Description=XiVO installation script
+After=network.target
+
+[Service]
+Type=oneshot
+TimeoutSec=0
+StandardInput=tty-force
+StandardOutput=tty
+ExecStart=${POSTINSTDIR}/postinst_script_launcher
+
+[Install]
+WantedBy=multi-user.target
+EOF
+systemctl enable xivo-install.service
 
 # Late work
 
