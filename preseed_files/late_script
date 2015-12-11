@@ -56,12 +56,7 @@ if [ -n "${CLASSES}" ]; then
 fi
 chmod a+x /target/${POSTINSTDIR}/*script*
 sed -i "s:^\(exit 0\):sh ${POSTINSTDIR}/postinst_script_launcher\n\1:" /target/etc/rc.local
-mkdir -p /target/etc/systemd/system/rc-local.service.d
-cat > /target/etc/systemd/system/rc-local.service.d/console.conf <<EOF
-[Service]
-StandardInput=tty-force
-StandardOutput=tty
-EOF
+
 
 # Late work
 
@@ -85,3 +80,4 @@ fi
 
 # ensure added drivers are taken into account before reboot
 chroot /target depmod -a ${KERN_REL}
+
