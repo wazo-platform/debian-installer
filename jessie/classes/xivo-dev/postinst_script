@@ -64,9 +64,6 @@ scr_progress_done
 
 scr_println "XIVO configuration in progress..."
 
-# initialize databases
-xivo-update-db
-
 # Zaptel config
 # (ignore errors caused by detection and config generation)
 # (btw, the machine may not have any DAHDI interface)
@@ -87,4 +84,3 @@ xivo-service restart all
 scr_progress
 
 scr_progress_done
-
