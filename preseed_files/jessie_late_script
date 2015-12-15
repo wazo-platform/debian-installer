@@ -29,9 +29,6 @@ echo "ipv6" >>/target/etc/modules
 # needed to update time (see postinst_script for full explanation)
 apt-install -y --force-yes ntpdate lsb-release
 
-# boot logs are quite useful
-echo "BOOTLOGD_ENABLE=Yes" >/target/etc/default/bootlogd
-
 # disable netjet, for dahdi
 echo "blacklist netjet" >> /target/etc/modprobe.d/blacklist.conf
 # avoid extraneous checkfs
