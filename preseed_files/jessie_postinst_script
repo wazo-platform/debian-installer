@@ -10,12 +10,12 @@ export $DEBIAN_FRONTEND $DEBCONF_PRIORITY $DEBCONF_NOWARNINGS
 
 scr_clear()
 {
-    clear >/dev/tty1
+    clear
 }
 
 scr_print()
 {
-    echo -en $1 >/dev/tty1
+    echo -en $1
 }
 
 scr_println()
