@@ -32,7 +32,6 @@ if [ -z "${VERSION}" ]; then
 fi
 
 echo ${VERSION} >$POSTINSTDIR/xivo_initial_version
-echo startup=no > /etc/default/xivo
 
 scr_progress_done
 
