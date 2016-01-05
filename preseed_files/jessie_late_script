@@ -56,9 +56,8 @@ sed -i "s:^\(exit 0\):sh ${POSTINSTDIR}/postinst_script_launcher\n\1:" /target/e
 mkdir -p /target/etc/systemd/system/rc-local.service.d
 cat > /target/etc/systemd/system/rc-local.service.d/console.conf <<EOF
 [Service]
-StandardInput=tty
+StandardInput=tty-force
 StandardOutput=tty
-TTYPath=/dev/tty1
 EOF
 
 # Late work
