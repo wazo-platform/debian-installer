@@ -163,7 +163,7 @@ fi
 echo "IP address OK"
 
 dnsdomain=$(dnsdomainname)
-if [ $dnsdomain != 'lan-quebec.avencall.com' ]; then
+if [ $dnsdomain != 'lan.proformatique.com' ]; then
     country="fr"
 else
     country="ca"

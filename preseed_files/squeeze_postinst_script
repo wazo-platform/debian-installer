@@ -132,7 +132,7 @@ KERN_REL=$(uname -r)
 KERN_FLAVOUR=$(echo ${KERN_REL} | cut -d\- -f3)
 
 dnsdomain=$(dnsdomainname)
-if [ $dnsdomain != 'lan-quebec.avencall.com' ]; then
+if [ $dnsdomain != 'lan.proformatique.com' ]; then
     country="fr"
 else
     country="ca"

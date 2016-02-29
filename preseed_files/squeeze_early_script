@@ -56,7 +56,7 @@ if ! grep -q "base-installer/kernel/image" $custom_preseed; then
     echo "d-i base-installer/kernel/image select linux-image-2.6-$kernel_flavour" >>$custom_preseed
 fi
 
-if [ "$dnsdomain" = "lan-quebec.avencall.com" ]; then
+if [ "$dnsdomain" = "lan.proformatique.com" ]; then
     cat > $custom_preseed << EOF
 d-i debian-installer/country string CA
 d-i console-keymaps-at/keymap select us
