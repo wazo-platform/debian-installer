@@ -197,6 +197,7 @@ if [ -L $unused_lv ]; then
     lvremove -f $unused_lv
 fi
 # install extra packages
+echo 'wireshark-common wireshark-common/install-setuid boolean true' | debconf-set-selections
 # (dhcp-client has to be purged _before_ dhcp3-client installation
 #  to avoid debconf user request for this critical event)
 pkg_manager -y purge dhcp-client
