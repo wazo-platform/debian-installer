@@ -5,18 +5,18 @@ PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 scr_print "Bootstrapping..."
 
-# looking for the proper XIVO version
+# looking for the proper version
 INSTALLER_LIST_FILE=/etc/apt/sources.list.d/installer.list
 
 cat << EOF >> ${INSTALLER_LIST_FILE}
 # Main devel
-deb http://mirror.wazo.community/debian xivo-dev main
-#deb-src http://mirror.wazo.community/debian xivo-dev main
+deb http://mirror.wazo.community/debian wazo-dev main
+#deb-src http://mirror.wazo.community/debian wazo-dev main
 EOF
 pkg_manager update
 pkg_manager -y install xivo-dist
 
-xivo-dist xivo-dev
+xivo-dist wazo-dev
 rm ${INSTALLER_LIST_FILE}
 
 pkg_manager update
@@ -27,7 +27,7 @@ pkg_manager update
 
 VERSION=$(apt-cache show --no-all-versions xivo | grep Version | cut -d\  -f2)
 if [ -z "${VERSION}" ]; then
-	scr_println "XIVO not found"
+	scr_println "Wazo not found"
 	exit_error
 fi
 
@@ -38,7 +38,7 @@ scr_progress_done
 
 # === Install ===
 
-scr_print "XIVO ${VERSION} installation in progress"
+scr_print "Wazo ${VERSION} installation in progress"
 
 # inetd not needed
 if [ -e /etc/init.d/inetd ]; then
@@ -46,7 +46,6 @@ if [ -e /etc/init.d/inetd ]; then
 	update-rc.d -f inetd remove
 fi
 
-# XIVO install
 # install kmods before using it, to ensure init scripts won't fail miserably
 pkg_manager -y install dahdi-linux-modules-${KERN_REL}
 scr_progress
@@ -61,7 +60,7 @@ scr_progress_done
 
 # === Configuration ===
 
-scr_println "XIVO configuration in progress..."
+scr_println "Wazo configuration in progress..."
 
 # Zaptel config
 # (ignore errors caused by detection and config generation)
