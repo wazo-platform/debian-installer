@@ -172,7 +172,7 @@ mirror="mirror.${dnsdomain}:3142"
 
 sed -i -r "s#http://$mirror/debian#http://ftp.$country.debian.org/debian/#" /etc/apt/sources.list
 
-if [ $dnsdomain != 'avencall.com' ] || [ $dnsdomain != 'xivo.io' ]; then
+if [ $dnsdomain != 'avencall.com' ] || [ $dnsdomain != 'wazo.community' ]; then
     echo "Acquire::http { Proxy \"http://$mirror\"; };" > /etc/apt/apt.conf
 fi
 

@@ -10,8 +10,8 @@ INSTALLER_LIST_FILE=/etc/apt/sources.list.d/installer.list
 
 cat << EOF >> ${INSTALLER_LIST_FILE}
 # Main devel
-deb http://mirror.xivo.io/archive xivo-15.14 main
-#deb-src http://mirror.xivo.io/archive xivo-15.14 main
+deb http://mirror.wazo.community/archive xivo-15.14 main
+#deb-src http://mirror.wazo.community/archive xivo-15.14 main
 EOF
 pkg_manager update
 pkg_manager -y install xivo-dist

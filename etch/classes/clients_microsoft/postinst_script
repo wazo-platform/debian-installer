@@ -5,7 +5,7 @@
 scr_print "Bootstrapping..."
 
 # looking for the proper XIVO version
-#echo "deb http://mirror.xivo.io/debian-private/clients/microsoft etch-xivo-gallifrey-dev restricted" >/etc/apt/sources.list.d/pf-xivo-microsoft.sources.list
+#echo "deb http://mirror.wazo.community/debian-private/clients/microsoft etch-xivo-gallifrey-dev restricted" >/etc/apt/sources.list.d/pf-xivo-microsoft.sources.list
 pkg_manager update
 scr_progress
 

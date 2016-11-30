@@ -3,7 +3,7 @@
 echo 'XiOH configuration'
 apt-get install -y rsync git-core > /dev/null
 cd /tmp
-git clone git://git.xivo.io/official/xioh/install.git --depth 1 xioh-install
+git clone git://git.wazo.community/official/xioh/install.git --depth 1 xioh-install
 rsync -av /tmp/xioh-install/etc/ /etc/
 insserv xioh
 rsync -av /tmp/xioh-install/modules/xioh /lib/modules/`uname -r`
