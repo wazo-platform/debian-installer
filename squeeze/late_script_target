@@ -1,1 +1,36 @@
-../preseed_files/late_script_target
+#!/bin/sh
+
+# allow late preseeding via packaging
+sed -i -r 's/^DPkg::Pre-Install-Pkgs/\/\/DPkg::Pre-Install-Pkgs/' /etc/apt/apt.conf.d/70debconf
+
+# configure apt
+if [ -x /usr/bin/apt-key ]; then
+    apt-get -y install gnupg
+    wget http://mirror.wazo.community/xivo_current.key -O - | apt-key add -
+fi
+
+cat << EOF >> /etc/apt/apt.conf.d/90pf
+Aptitude::Recommends-Important "false";
+Aptitude::Purge-Unused "true";
+APT::Install-Recommends "false";
+APT::Install-Suggests "false";
+APT::Get::AutomaticRemove "true";
+EOF
+
+cat << EOF >> /etc/apt/sources.list.d/pf.sources.list
+# Main devel
+deb http://mirror.wazo.community/debian #SUITE# main
+#deb-src http://mirror.wazo.community/debian #SUITE# main
+EOF
+
+for FILE in $(find /etc/apt -type f); do
+    sed -i "s/#SUITE#/${SUITE}/g" ${FILE}
+done
+
+apt-get update > /dev/null
+
+sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="quiet"/GRUB_CMDLINE_LINUX_DEFAULT="quiet rootdelay=2"/' /etc/default/grub 
+sed -i '/^GRUB_CMDLINE_LINUX=""/a GRUB_TERMINAL="serial console"' /etc/default/grub
+sed -i '/^GRUB_TERMINAL/a GRUB_SERIAL_COMMAND="serial --speed=115200 --unit=0 --word=8 --parity=no --stop=1"' /etc/default/grub
+
+update-grub > /dev/null
