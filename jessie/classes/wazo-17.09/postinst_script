@@ -1,0 +1,85 @@
+#!/bin/sh
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
+# === Bootstrap ===
+
+scr_print "Bootstrapping..."
+
+# looking for the proper version
+INSTALLER_LIST_FILE=/etc/apt/sources.list.d/installer.list
+
+cat << EOF >> ${INSTALLER_LIST_FILE}
+# Main devel
+deb http://mirror.wazo.community/archive wazo-17.09 main
+#deb-src http://mirror.wazo.community/archive wazo-17.09 main
+EOF
+pkg_manager update
+pkg_manager -y install xivo-dist
+
+xivo-dist wazo-17.09
+rm ${INSTALLER_LIST_FILE}
+
+pkg_manager update
+
+# packages containing source lists could be upgradable
+pkg_manager -y dist-upgrade
+pkg_manager update
+
+VERSION=$(apt-cache show --no-all-versions xivo | grep Version | cut -d\  -f2)
+if [ -z "${VERSION}" ]; then
+	scr_println "Wazo not found"
+	exit_error
+fi
+
+echo ${VERSION} >$POSTINSTDIR/xivo_initial_version
+
+scr_progress_done
+
+
+# === Install ===
+
+scr_print "Wazo ${VERSION} installation in progress"
+
+# inetd not needed
+if [ -e /etc/init.d/inetd ]; then
+	invoke-rc.d inetd stop
+	update-rc.d -f inetd remove
+fi
+
+# install kmods before using it, to ensure init scripts won't fail miserably
+pkg_manager -y install dahdi-linux-modules-${KERN_REL}
+scr_progress
+export LANG=en_US.UTF-8
+pkg_manager -y install xivo
+pkg_manager -y install asterisk-moh-opsound-g722 asterisk-moh-opsound-gsm asterisk-moh-opsound-wav
+scr_progress
+
+scr_progress_done
+
+
+# === Configuration ===
+
+scr_println "Wazo configuration in progress..."
+
+# Zaptel config
+# (ignore errors caused by detection and config generation)
+# (btw, the machine may not have any DAHDI interface)
+(
+	# (restart to autoload modules)
+	invoke-rc.d dahdi restart
+	dahdi_genconf
+	# fix rights
+	CONFIG="/etc/asterisk/dahdi-channels.conf"
+	if [ -e "${CONFIG}" ]; then
+		chown asterisk:www-data ${CONFIG}
+		chmod 660 ${CONFIG}
+	fi
+) >/dev/null 2>/dev/null || true
+scr_progress
+
+xivo-service restart all
+# install production mirror
+xivo-dist phoenix
+scr_progress
+
+scr_progress_done
