@@ -2,10 +2,9 @@
 
 set +x
 
-DEBIAN_FRONTEND=noninteractive
-DEBIAN_PRIORITY=critical
-DEBCONF_NOWARNINGS=yes
-export $DEBIAN_FRONTEND $DEBCONF_PRIORITY $DEBCONF_NOWARNINGS
+export DEBIAN_FRONTEND=noninteractive
+export DEBIAN_PRIORITY=critical
+export DEBCONF_NOWARNINGS=yes
 
 
 scr_clear()
