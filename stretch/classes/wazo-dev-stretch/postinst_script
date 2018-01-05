@@ -14,7 +14,7 @@ deb http://mirror.wazo.community/debian wazo-dev-stretch main
 #deb-src http://mirror.wazo.community/debian wazo-dev-stretch main
 EOF
 pkg_manager update
-pkg_manager -y install xivo-dist
+pkg_manager -yq install xivo-dist
 
 xivo-dist wazo-dev-stretch
 rm ${INSTALLER_LIST_FILE}
@@ -22,7 +22,7 @@ rm ${INSTALLER_LIST_FILE}
 pkg_manager update
 
 # packages containing source lists could be upgradable
-pkg_manager -y dist-upgrade
+pkg_manager -yq dist-upgrade
 pkg_manager update
 
 VERSION=$(apt-cache show --no-all-versions xivo | grep Version | cut -d\  -f2)
@@ -47,12 +47,12 @@ if [ -e /etc/init.d/inetd ]; then
 fi
 
 # install kmods before using it, to ensure init scripts won't fail miserably
-pkg_manager -y install dahdi-linux-modules-${KERN_REL}
+pkg_manager -yq install dahdi-linux-modules-${KERN_REL}
 scr_progress
 export LANG=en_US.UTF-8
-pkg_manager -y install xivo
-pkg_manager -y install asterisk-moh-opsound-g722 asterisk-moh-opsound-gsm asterisk-moh-opsound-wav
-pkg_manager -y install xivo-dev-ssh-pubkeys
+pkg_manager -yq install xivo
+pkg_manager -yq install asterisk-moh-opsound-g722 asterisk-moh-opsound-gsm asterisk-moh-opsound-wav
+pkg_manager -yq install xivo-dev-ssh-pubkeys
 scr_progress
 
 scr_progress_done

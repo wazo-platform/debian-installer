@@ -188,7 +188,7 @@ scr_progress
 
 # fetch security and other updates
 
-pkg_manager -y dist-upgrade
+pkg_manager -yq dist-upgrade
 scr_progress
 
 # remove unused lv, partman limitation
@@ -198,7 +198,7 @@ if [ -L $unused_lv ]; then
 fi
 # install extra packages
 echo 'wireshark-common wireshark-common/install-setuid boolean true' | debconf-set-selections
-pkg_manager -y install ssh postfix sudo vim-nox bzip2 \
+pkg_manager -yq install ssh postfix sudo vim-nox bzip2 \
     less iputils-ping host traceroute popularity-contest linuxlogo \
     locate htop iftop nmap lsof tshark telnet \
     tcpdump multitail screen mtr-tiny patch tree curl ldap-utils \
