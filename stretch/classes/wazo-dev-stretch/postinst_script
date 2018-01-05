@@ -10,13 +10,13 @@ INSTALLER_LIST_FILE=/etc/apt/sources.list.d/installer.list
 
 cat << EOF >> ${INSTALLER_LIST_FILE}
 # Main devel
-deb http://mirror.wazo.community/debian wazo-dev main
-#deb-src http://mirror.wazo.community/debian wazo-dev main
+deb http://mirror.wazo.community/debian wazo-dev-stretch main
+#deb-src http://mirror.wazo.community/debian wazo-dev-stretch main
 EOF
 pkg_manager update
 pkg_manager -y install xivo-dist
 
-xivo-dist wazo-dev
+xivo-dist wazo-dev-stretch
 rm ${INSTALLER_LIST_FILE}
 
 pkg_manager update
