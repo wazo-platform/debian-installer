@@ -119,7 +119,7 @@ has_ip_addr_via_dhcp()
         echo "Could not find an interface configured by dhclient"
         return 2
     fi
-    if [ -n "$(ifconfig $network_interface | grep 'inet addr:')" ] ; then
+    if [ -n "$(ip -f inet addr show ${network_interface} | grep 'inet ')" ] ; then
         return 0
     fi
     return 1
