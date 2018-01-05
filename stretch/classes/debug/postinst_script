@@ -1,0 +1,4 @@
+#!/bin/sh
+
+scr_print "DEBUG mode activated !"
+
