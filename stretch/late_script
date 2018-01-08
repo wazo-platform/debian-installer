@@ -57,13 +57,6 @@ echo "sh ${POSTINSTDIR}/postinst_script_launcher" >> /target/etc/rc.local
 echo "exit 0" >> /target/etc/rc.local
 chmod a+x /target/etc/rc.local
 
-mkdir -p /target/etc/systemd/system/rc-local.service.d
-cat > /target/etc/systemd/system/rc-local.service.d/console.conf <<EOF
-[Service]
-StandardInput=tty-force
-StandardOutput=tty
-EOF
-
 # Late work
 
 preseed_fetch /late_script_target /target/tmp/late_script_target
