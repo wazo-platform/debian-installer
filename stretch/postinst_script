@@ -202,7 +202,7 @@ pkg_manager -yq install ssh postfix sudo vim-nox bzip2 \
     locate htop iftop nmap lsof tshark telnet \
     tcpdump multitail screen mtr-tiny patch tree curl ldap-utils \
     bash-completion whois pciutils ngrep dstat sysstat libxml2-utils \
-    arping p7zip python-pexpect
+    arping p7zip python-pexpect man
 pkg_manager -y purge exim4-base exim4-config tasksel tasksel-data nvi
 scr_progress
 
