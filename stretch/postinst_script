@@ -58,9 +58,8 @@ exit_error()
     scr_println
     scr_println_error "Installation Failed !!!"
     scr_println
-    scr_println "Press Enter to login and analyse the installation log ($postinst_log)."
+    scr_println "The installation log is available at $postinst_log."
     scr_println
-    read z
 
     scr_end
     exit 1
@@ -75,11 +74,6 @@ display_final_info()
     scr_println
     scr_println "Network information:"
     scr_println "${MSG}"
-
-    scr_println
-    scr_println "Press Enter to login and configure."
-    scr_println
-    read z
 }
 
 finish_fai()
