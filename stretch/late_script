@@ -52,7 +52,11 @@ if [ -n "${CLASSES}" ]; then
     done
 fi
 chmod a+x /target/${POSTINSTDIR}/*script*
-sed -i "s:^\(exit 0\):sh ${POSTINSTDIR}/postinst_script_launcher\n\1:" /target/etc/rc.local
+echo "#!/bin/sh" >> /target/etc/rc.local
+echo "sh ${POSTINSTDIR}/postinst_script_launcher" >> /target/etc/rc.local
+echo "exit 0" >> /target/etc/rc.local
+chmod a+x /target/etc/rc.local
+
 mkdir -p /target/etc/systemd/system/rc-local.service.d
 cat > /target/etc/systemd/system/rc-local.service.d/console.conf <<EOF
 [Service]
