@@ -50,6 +50,7 @@ fi
 pkg_manager -yq install dahdi-linux-modules-${KERN_REL}
 scr_progress
 export LANG=en_US.UTF-8
+pkg_manager -yq install xivo-config  # contains the apt-pinning for postgresql
 pkg_manager -yq install postgresql
 systemctl start postgresql  # because we are in rc.local, Debian packaging (invoke-rc.d) won't start postgres normally (systemctl --job-mode=ignore-dependencies ...)
 pkg_manager -yq install xivo
