@@ -21,10 +21,6 @@ rm ${INSTALLER_LIST_FILE}
 
 pkg_manager update
 
-# packages containing source lists could be upgradable
-pkg_manager -yq dist-upgrade
-pkg_manager update
-
 VERSION=$(apt-cache show --no-all-versions xivo | grep Version | cut -d\  -f2)
 if [ -z "${VERSION}" ]; then
 	scr_println "Wazo not found"
