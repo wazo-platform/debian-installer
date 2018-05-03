@@ -156,18 +156,10 @@ fi
 echo "IP address OK"
 
 dnsdomain=$(dnsdomainname)
-if [ $dnsdomain != 'lan.proformatique.com' ]; then
-    country="fr"
-else
-    country="ca"
-fi
 mirror="mirror.${dnsdomain}:3142"
 
-sed -i -r "s#http://$mirror/debian#http://ftp.$country.debian.org/debian/#" /etc/apt/sources.list
-
-if [ $dnsdomain != 'avencall.com' ] || [ $dnsdomain != 'wazo.community' ]; then
-    echo "Acquire::http { Proxy \"http://$mirror\"; };" > /etc/apt/apt.conf
-fi
+sed -i -r "s#http://$mirror/debian#http://deb.debian.org/debian/#" /etc/apt/sources.list
+echo "Acquire::http { Proxy \"http://$mirror\"; };" > /etc/apt/apt.conf
 
 scr_print "Base installation in progress"
 
