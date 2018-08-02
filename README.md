@@ -2,6 +2,7 @@
 
 ## Execution order
 
+```
 GET /preseed.cfg
 GET /installer.cfg  (from /preseed.cfg)
 GET /standard_partitioning.cfg  (from /preseed.cfg)
@@ -24,3 +25,4 @@ RUN /etc/rc.local  (installed from /late_script)
 RUN /postinst_script_launcher  (from /etc/rc.local)
 RUN /postinst_script  (from /postinst_script_launcher)
 RUN /classes/*/postinst_script  (from /postinst_script)
+```
