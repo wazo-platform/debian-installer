@@ -56,20 +56,9 @@ if ! grep -q "base-installer/kernel/image" $custom_preseed; then
     echo "d-i base-installer/kernel/image select linux-image-$kernel_flavour" >>$custom_preseed
 fi
 
-if [ "$dnsdomain" = "lan.proformatique.com" ]; then
-    cat > $custom_preseed << EOF
+debconf-set-selections << EOF
 d-i debian-installer/country string CA
 d-i debian-installer/keymap select us
 d-i keyboard-configuration/xkb-keymap select us
 d-i time/zone string US/Eastern
 EOF
-else
-    cat > $custom_preseed << EOF
-d-i debian-installer/country string FR
-d-i debian-installer/keymap select fr-latin9
-d-i keyboard-configuration/xkb-keymap select fr-latin9
-d-i time/zone string Europe/Paris
-EOF
-fi
-
-debconf-set-selections $custom_preseed
