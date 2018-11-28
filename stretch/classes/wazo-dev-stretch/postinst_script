@@ -77,6 +77,9 @@ scr_println "Wazo configuration in progress..."
 ) >/dev/null 2>/dev/null || true
 scr_progress
 
+systemctl start wazo-auth
+wazo-auth-keys service update
+
 xivo-service restart all
 scr_progress
 
