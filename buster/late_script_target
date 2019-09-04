@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# allow late preseeding via packaging
+sed -i -r 's/^DPkg::Pre-Install-Pkgs/\/\/DPkg::Pre-Install-Pkgs/' /etc/apt/apt.conf.d/70debconf
+
+# configure apt
+if [ -x /usr/bin/apt-key ]; then
+    apt-get -y install gnupg
+    wget http://mirror.wazo.community/xivo_current.key -O - | apt-key add -
+    wget http://mirror.wazo.community/wazo_current.key -O - | apt-key add -
+fi
+
+cat << EOF >> /etc/apt/apt.conf.d/90pf
+Aptitude::Recommends-Important "false";
+Aptitude::Purge-Unused "true";
+APT::Install-Recommends "false";
+APT::Install-Suggests "false";
+APT::Get::AutomaticRemove "true";
+EOF
+
+# update packages from security.debian.org (e.g. latest kernel)
+apt-get -yq -o Dpkg::Options::="--force-confold" dist-upgrade
