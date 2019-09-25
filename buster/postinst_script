@@ -139,7 +139,7 @@ trap exit_error ERR
 scr_begin
 scr_clear
 scr_println
-scr_println "=*=  XiVO Fully Automatic Installation =*="
+scr_println "=*=  Wazo Fully Automatic Installation =*="
 scr_println
 
 # discovery
@@ -163,11 +163,6 @@ echo "Acquire::http { Proxy \"http://$mirror\"; };" > /etc/apt/apt.conf
 
 scr_print "Base installation in progress"
 
-# configure syslog
-echo "*.* /dev/tty12" >>/etc/rsyslog.conf
-invoke-rc.d rsyslog restart
-scr_progress
-
 pkg_manager update
 scr_progress
 
@@ -176,64 +171,10 @@ unused_lv="/dev/data/to_remove"
 if [ -L $unused_lv ]; then
     lvremove -f $unused_lv
 fi
-# install extra packages
-echo 'wireshark-common wireshark-common/install-setuid boolean true' | debconf-set-selections
-pkg_manager -yq install ssh postfix sudo vim-nox bzip2 \
-    less iputils-ping host traceroute popularity-contest linuxlogo \
-    locate htop iftop nmap lsof tshark telnet \
-    tcpdump multitail screen mtr-tiny patch tree curl ldap-utils \
-    bash-completion whois pciutils ngrep dstat sysstat libxml2-utils \
-    arping p7zip python-pexpect man
-pkg_manager -y purge exim4-base exim4-config tasksel tasksel-data nvi
-scr_progress
-
-# configure vim
-sed -i 's/"syntax on/syntax on/' /etc/vim/vimrc
-sed -i 's/"set background=dark/set background=dark/' /etc/vim/vimrc
 
 # configure ssh
 sed -i 's/^#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 systemctl restart ssh
-
-# create bash profil
-cat > /etc/profile.d/xivo.sh << EOF
-# Commented out, don't overwrite xterm -T "title" -n "icontitle" by default.
-# If this is an xterm set the title to user@host:dir
-# (This modifies the terminal title, not the PS1 ...)
-case "$TERM" in
-xterm*|rxvt*)
-    PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"'
-    ;;
-*)
-    ;;
-esac
-
-# enable bash completion in interactive shells
-if [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-fi
-
-export LS_OPTIONS='--color=auto'
-eval "$(dircolors)"
-alias ls='ls $LS_OPTIONS'
-alias ll='ls $LS_OPTIONS -l'
-EOF
-
-# screenrc
-cat > /root/.screenrc << EOF
-# set a big scrolling buffer
-defscrollback 10000
-# Set the caption on the bottom line
-caption always "%{= kw}%-w%{= BW}%n %t%{-}%+w %-= @%H - %LD %d %LM - %c"
-shell -/bin/bash
-EOF
-
-# miscellaneous configuration
-chmod 700 /root
-## no disclosure when logouting
-echo "clear" >/root/.bash_logout
-systemctl daemon-reload
-scr_progress
 
 scr_progress_done
 
