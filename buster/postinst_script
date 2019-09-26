@@ -172,6 +172,10 @@ if [ -L $unused_lv ]; then
     lvremove -f $unused_lv
 fi
 
+# install ca-certificate to be able to git clone https://github...
+pkg_manager -yq install ca-certificates
+scr_progress
+
 # configure ssh
 sed -i 's/^#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 systemctl restart ssh
