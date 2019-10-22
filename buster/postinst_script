@@ -159,7 +159,8 @@ dnsdomain=$(dnsdomainname)
 mirror="mirror.${dnsdomain}:3142"
 
 sed -i -r "s#http://$mirror/debian#http://deb.debian.org/debian/#" /etc/apt/sources.list
-echo "Acquire::http { Proxy \"http://$mirror\"; };" > /etc/apt/apt.conf
+echo "Acquire::http::Proxy \"http://$mirror\";" > /etc/apt/apt.conf
+echo "Acquire::https::Proxy::mirror.wazo.io DIRECT;" >> /etc/apt/apt.conf
 
 scr_print "Base installation in progress"
 
